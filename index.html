@@ -2,717 +2,574 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COINLY :: COMMAND NEXUS</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEW TON - Super Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #030712;
-            --glass-panel: rgba(17, 24, 39, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --primary: #00f0ff;
-            --accent: #7000ff;
-            --success: #00ff9d;
-            --danger: #ff0055;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --font-head: 'Orbitron', sans-serif;
-            --font-body: 'Rajdhani', sans-serif;
+            --bg-dark: #121212;
+            --bg-card: #1e1e1e;
+            --primary-accent: #00eaff;
+            --text-main: #ffffff;
+            --text-muted: #b0b3b8;
+            --border-color: #333333;
+            --success-color: #00ff88;
+            --danger-color: #ff4d4d;
+            --warning-color: #FFC107;
+            --ton-color: #0098EA;
+            --promo-gradient: linear-gradient(45deg, #ff00cc, #333399);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        
         body {
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.15), transparent 25%);
             color: var(--text-main);
-            font-family: var(--font-body);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column; /* Changed for mobile layout base */
+            margin: 0;
+            padding: 0;
         }
 
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
-        
-        /* --- LOGIN OVERLAY --- */
-        #auth-gate {
+        /* --- LOGIN SCREEN --- */
+        #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; padding: 20px;
+            background-color: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
         }
-        .cyber-card {
-            background: rgba(10, 10, 15, 0.95);
-            border: 1px solid var(--glass-border);
-            padding: 30px; border-radius: 20px;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
-            width: 100%; max-width: 350px; text-align: center;
-            position: relative; overflow: hidden;
+        .login-box {
+            background: var(--bg-card); padding: 40px; border-radius: 12px;
+            width: 90%; max-width: 350px; text-align: center;
+            border: 1px solid var(--primary-accent);
+            box-shadow: 0 0 20px rgba(0, 234, 255, 0.2);
         }
-        .cyber-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: scan 2s infinite linear;
+        .login-box h2 { color: var(--primary-accent); margin-bottom: 20px; }
+        .login-box input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 6px;
+            box-sizing: border-box;
         }
-        
-        input, select {
-            width: 100%; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            padding: 12px 15px; color: #fff;
-            border-radius: 8px; margin-bottom: 15px;
-            font-family: var(--font-body); font-size: 16px;
-            transition: 0.3s;
-        }
-        input:focus, select:focus { border-color: var(--primary); }
-
-        .btn-cyber {
-            width: 100%; padding: 12px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border: none; border-radius: 8px;
-            color: #fff; font-weight: bold; font-family: var(--font-head);
-            cursor: pointer; letter-spacing: 1px;
-            transition: 0.3s; text-transform: uppercase;
-        }
-        .btn-cyber:active { transform: scale(0.98); }
-
-        /* --- APP LAYOUT --- */
-        #admin-nexus { display: none; width: 100%; height: 100%; overflow: hidden; }
-
-        /* Mobile Header (Visible only on mobile) */
-        .mobile-header {
-            display: none; justify-content: space-between; align-items: center;
-            padding: 15px 20px; background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 200;
-        }
-        .brand-logo { font-family: var(--font-head); font-weight:900; color:#fff; font-size:20px; letter-spacing: 2px; }
-        .menu-toggle { font-size: 24px; color: var(--primary); cursor: pointer; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 80px; height: 100%;
-            background: rgba(5, 5, 10, 0.95);
-            border-right: 1px solid var(--glass-border);
-            display: flex; flex-direction: column; align-items: center;
-            padding-top: 30px; gap: 10px;
-            transition: 0.3s; z-index: 150;
-        }
-        
-        /* Desktop Hover Effect */
-        @media (min-width: 769px) {
-            #admin-nexus { display: none; flex-direction: row; }
-            .sidebar:hover { width: 240px; align-items: flex-start; padding-left: 20px; }
-            .sidebar:hover .nav-label { display: inline-block; opacity: 1; }
+        .login-box button {
+            width: 100%; padding: 12px; margin-top: 15px;
+            background: var(--primary-accent); border: none; font-weight: bold; cursor: pointer;
+            border-radius: 6px; font-size: 1em;
         }
 
-        .nav-item {
-            display: flex; align-items: center; gap: 15px;
-            color: var(--text-muted); text-decoration: none;
-            padding: 12px; border-radius: 10px;
-            transition: 0.3s; width: 100%; cursor: pointer;
-            white-space: nowrap;
-        }
-        .nav-item i { font-size: 20px; min-width: 30px; text-align: center; }
-        .nav-label { font-size: 16px; font-weight: 600; display: none; opacity: 0; transition: 0.3s; }
-        
-        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: var(--primary); }
-        .nav-item.active i { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        /* --- ADMIN LAYOUT --- */
+        #admin-content { display: none; max-width: 1400px; margin: 0 auto; padding: 20px; }
 
-        /* Main Content */
-        .main-viewport {
-            flex: 1; padding: 20px; overflow-y: auto; position: relative;
-            padding-bottom: 80px; /* Space for mobile scroll */
-        }
-
-        .header-bar {
+        .admin-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 15px; flex-wrap: wrap; gap: 10px;
+            padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;
         }
-        .page-title { font-family: var(--font-head); font-size: 20px; color: #fff; }
+        .logout-btn { background: var(--danger-color); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-        /* Sections */
-        .view-section { display: none; animation: fadeIn 0.4s ease; }
-        .view-section.active { display: block; }
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .nav-btn {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 500; transition: all 0.2s;
+        }
+        .nav-btn:hover, .nav-btn.active { background-color: rgba(0, 234, 255, 0.1); color: var(--primary-accent); border-color: var(--primary-accent); }
 
-        /* Dashboard Grid */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px; margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--glass-panel); border: 1px solid var(--glass-border);
-            padding: 20px; border-radius: 15px; position: relative; overflow: hidden;
-        }
-        .stat-val { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: #fff; margin: 10px 0; }
-        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .admin-section { display: none; animation: fadeIn 0.3s; }
+        .admin-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Tables */
-        .data-table-container {
-            background: var(--glass-panel); border: 1px solid var(--glass-border);
-            border-radius: 15px; padding: 15px; 
-            overflow-x: auto; /* IMPORTANT FOR MOBILE */
-            -webkit-overflow-scrolling: touch;
-        }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; /* Force scroll on mobile */ }
-        th { text-align: left; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--glass-border); font-size: 12px; white-space: nowrap; }
-        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); color: #fff; font-size: 13px; }
+        /* --- CARDS & GRID --- */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .dash-card { background-color: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; }
+        .dash-card .count { font-size: 2.5em; font-weight: bold; color: var(--primary-accent); margin: 10px 0; }
+        .dash-card h3 { margin: 0; color: var(--text-muted); font-size: 1.1em; }
         
-        .badge { padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; white-space: nowrap; }
-        .badge-success { background: rgba(0, 255, 157, 0.15); color: var(--success); border: 1px solid var(--success); }
-        .badge-pending { background: rgba(255, 187, 0, 0.15); color: #ffbb00; border: 1px solid #ffbb00; }
-        .badge-danger { background: rgba(255, 0, 85, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .grid-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .card-item {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px;
+            transition: transform 0.2s; position: relative;
+        }
+        .card-item:hover { border-color: var(--primary-accent); transform: translateY(-3px); }
+        .card-item.banned-user { border: 1px solid var(--danger-color); opacity: 0.8; }
 
-        /* Promo Generator Layout */
-        .promo-layout { display: flex; gap: 20px; flex-wrap: wrap; }
-        .promo-form { flex: 1; min-width: 280px; }
-        .promo-list { flex: 2; min-width: 100%; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .username { font-size: 1.1em; font-weight: 600; color: var(--primary-accent); }
+        .userid { font-size: 0.8em; color: var(--text-muted); font-family: monospace; display: block; user-select: all;}
+        
+        .card-stats { display: flex; flex-direction: column; gap: 5px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; }
+        .stat-row { font-size: 0.9em; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 2px;}
+        .stat-row:last-child { border: none; margin:0; padding:0; }
+        .stat-val { font-weight: 600; color: white; word-break: break-all; text-align: right; }
+        
+        .wallet-box {
+            background: #222; border: 1px solid #444; padding: 8px; border-radius: 6px;
+            display: flex; justify-content: space-between; align-items: center; margin-top: 5px;
+        }
+        .wallet-addr { font-family: monospace; font-size: 0.8em; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
 
-        /* Toast Notification */
-        #toast-container { position: fixed; top: 10px; right: 10px; z-index: 10000; width: 90%; max-width: 300px; }
-        .toast {
-            background: rgba(0,0,0,0.95); color: #fff; padding: 12px 20px;
-            border-left: 4px solid var(--primary); border-radius: 5px;
-            margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 14px;
+        .card-actions { display: flex; gap: 5px; margin-top: auto; flex-wrap: wrap; }
+        .btn { padding: 8px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; flex: 1; color: white; transition: 0.2s;}
+        .btn-approve { background-color: var(--success-color); color: black; }
+        .btn-reject { background-color: var(--danger-color); }
+        .btn-ton { background-color: var(--ton-color); color:white;}
+        .btn-pts { background-color: #FF9800; color:black;}
+        .btn-copy { background: #444; padding: 4px 10px; font-size: 0.75em; border: 1px solid #666; border-radius: 4px; color: white; cursor: pointer; }
+        .btn-copy:hover { background: #555; }
+
+        .withdrawal-badge {
+            background: #333; color: var(--success-color); border: 1px solid var(--success-color);
+            border-radius: 12px; padding: 2px 8px; font-size: 0.75rem; display: inline-block;
+            margin-top: 4px;
         }
 
-        /* --- MOBILE SPECIFIC STYLES --- */
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            #admin-nexus { flex-direction: column; }
-            
-            .mobile-header { display: flex; }
-            
-            .sidebar {
-                position: fixed; top: 60px; left: -100%;
-                width: 250px; height: calc(100% - 60px);
-                align-items: flex-start; padding-left: 20px;
-                background: #05050a; border-right: 1px solid var(--primary);
-                transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            .sidebar.active { left: 0; box-shadow: 50px 0 100px rgba(0,0,0,0.8); }
-            
-            .sidebar .nav-label { display: inline-block; opacity: 1; }
-            .sidebar .brand-logo-desktop { display: none; } /* Hide heavy desktop logo in sidebar */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box; }
+        .submit-btn { width: 100%; padding: 12px; background: var(--primary-accent); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-            .main-viewport { padding: 15px; }
-            
-            .stats-grid { grid-template-columns: 1fr; } /* Stack cards */
-            
-            .promo-layout { flex-direction: column; }
-            
-            /* Overlay when sidebar open */
-            .sidebar-overlay {
-                position: fixed; top: 60px; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5); z-index: 140; display: none;
-                backdrop-filter: blur(3px);
-            }
-            .sidebar-overlay.active { display: block; }
-        }
+        .promo-input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+        .promo-select { background: #333; color: white; border: 1px solid #555; padding: 5px; border-radius: 4px; }
 
-        @keyframes scan { 0% { left: -100%; } 100% { left: 100%; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
-        .btn-small {
-            padding: 5px 10px; border-radius: 5px; border: 1px solid var(--glass-border);
-            background: transparent; color: #fff; cursor: pointer; transition: 0.2s; font-size: 12px;
-        }
-        .btn-small:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-small.danger:hover { border-color: var(--danger); color: var(--danger); }
-
+        .loader { border: 3px solid #333; border-top: 3px solid var(--primary-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- NOTIFICATIONS -->
-    <div id="toast-container"></div>
-
-    <!-- AUTH SCREEN -->
-    <div id="auth-gate">
-        <div class="cyber-card">
-            <h2 style="font-family: var(--font-head); color: var(--primary); margin-bottom: 20px;">SYSTEM LOCKED</h2>
-            <input type="email" id="admin-email" placeholder="Admin Email">
-            <input type="password" id="admin-pass" placeholder="Passcode">
-            <button class="btn-cyber" onclick="nexusLogin()">AUTHENTICATE</button>
-            <p id="login-msg" style="color: var(--danger); font-size: 12px; margin-top: 10px;"></p>
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>Admin Access</h2>
+            <form id="loginForm">
+                <input type="email" id="adminEmail" placeholder="Admin Email" required>
+                <input type="password" id="adminPass" placeholder="Password" required>
+                <button type="submit" id="loginBtn">Login</button>
+            </form>
+            <p id="loginMsg" style="color:red; margin-top:10px; font-size:0.85em;"></p>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="admin-nexus">
-        
-        <!-- Mobile Header -->
-        <div class="mobile-header">
-            <div class="brand-logo">CNX :: MOBILE</div>
-            <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-        </div>
+    <!-- MAIN ADMIN CONTENT -->
+    <div id="admin-content" class="admin-container">
+        <header class="admin-header">
+            <h1>NEW TON <span style="font-size:0.5em; color:#fff;">Admin Panel</span></h1>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </header>
 
-        <!-- Sidebar Overlay (Mobile) -->
-        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <nav class="nav-buttons">
+            <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+            <button class="nav-btn" data-target="users">Manage Users</button>
+            <button class="nav-btn" data-target="withdrawals">Withdrawals <span id="nav-pending-count" style="background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.8em; display:none;">0</span></button>
+            <button class="nav-btn" data-target="tasks">Add Task</button>
+            <button class="nav-btn" data-target="manage-tasks">Manage Tasks</button>
+            <button class="nav-btn" data-target="video-add" style="border-color:#ff4d4d; color:#ff4d4d;">Video</button>
+            <button class="nav-btn" data-target="promo-codes" style="border-color:#ff00cc; color:#ff00cc;">Promo Codes</button>
+        </nav>
 
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="brand-logo-desktop" style="font-family: var(--font-head); font-weight:900; color:#fff; font-size:20px; margin-bottom:20px; width:100%; text-align:center;">CNX</div>
-            
-            <div class="nav-item active" onclick="navTo('dashboard', this)">
-                <i class="fas fa-chart-pie"></i> <span class="nav-label">Dashboard</span>
-            </div>
-            <div class="nav-item" onclick="navTo('promo', this)">
-                <i class="fas fa-qrcode"></i> <span class="nav-label">Promo Codes</span>
-            </div>
-            <div class="nav-item" onclick="navTo('users', this)">
-                <i class="fas fa-users-viewfinder"></i> <span class="nav-label">User Matrix</span>
-            </div>
-            <div class="nav-item" onclick="navTo('finance', this)">
-                <i class="fas fa-wallet"></i> <span class="nav-label">Finance</span>
-            </div>
-            <div class="nav-item" onclick="navTo('tasks', this)">
-                <i class="fas fa-list-check"></i> <span class="nav-label">Task Manager</span>
-            </div>
-
-            <div style="flex:1"></div>
-            <div class="nav-item" style="color:var(--danger); margin-bottom: 20px;" onclick="nexusLogout()">
-                <i class="fas fa-power-off"></i> <span class="nav-label">Disconnect</span>
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="admin-section active">
+            <h2>Overview</h2>
+            <div class="dashboard-grid">
+                <div class="dash-card"><h3>Total Users</h3><p class="count" id="dash-total-users">...</p></div>
+                <div class="dash-card"><h3>Daily New Users</h3><p class="count" id="dash-daily-users">0</p><p style="font-size:0.8em; color:#777;">Joined Today</p></div>
+                <div class="dash-card"><h3>Pending Withdrawals</h3><p class="count" id="dash-pending-withdrawals">0</p></div>
+                <div class="dash-card"><h3>Active Tasks</h3><p class="count" id="dash-active-tasks">0</p></div>
             </div>
         </div>
 
-        <!-- Viewport -->
-        <div class="main-viewport">
+        <!-- WITHDRAWALS (Updated) -->
+        <div id="withdrawals" class="admin-section">
+            <h2>Withdrawal Requests</h2>
+            <div id="withdrawals-list" class="grid-list"></div>
+        </div>
+
+        <!-- USERS (Updated Search) -->
+        <div id="users" class="admin-section">
+            <h2>Users Management
+                <div style="display:inline-block; margin-left:15px;">
+                    <input type="text" id="userSearch" placeholder="Enter ID or Username..." style="padding:8px; width:200px; background:#333; color:white; border:1px solid #555; border-radius:4px;"> 
+                    <button onclick="searchUser()" class="btn" style="background:var(--primary-accent); color:black; flex:0; width:auto; padding:8px 15px;">Search</button>
+                    <button onclick="loadUsers()" class="btn" style="background:#444; color:white; flex:0; width:auto; padding:8px 15px;">Reset</button>
+                </div>
+            </h2>
+            <div id="users-list" class="grid-list"></div>
+        </div>
+
+        <!-- CREATE TASK -->
+        <div id="tasks" class="admin-section">
+            <h2>Create Task</h2>
+            <div style="max-width:500px; margin:0 auto; background:var(--bg-card); padding:20px; border-radius:12px;">
+                <form id="createTaskForm">
+                    <div class="form-group"><label>Title</label><input type="text" id="taskTitle" required></div>
+                    <div class="form-group"><label>URL</label><input type="url" id="taskUrl" required></div>
+                    <div class="form-group"><label>Reward (Points)</label><input type="number" id="taskReward" required></div>
+                    <div class="form-group"><label>Limit</label><input type="number" id="taskLimit" required></div>
+                    <button type="submit" class="submit-btn">Create</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MANAGE TASKS -->
+        <div id="manage-tasks" class="admin-section">
+            <h2>Active Tasks</h2>
+            <div id="tasks-list" class="grid-list"></div>
+        </div>
+
+        <!-- VIDEO -->
+        <div id="video-add" class="admin-section">
+            <h2>Add Video</h2>
+            <div style="max-width:500px; margin:0 auto; background:var(--bg-card); padding:20px; border-radius:12px; margin-bottom:20px;">
+                <form id="addVideoForm">
+                    <div class="form-group"><label>Thumb URL</label><input type="url" id="vidThumb" required></div>
+                    <div class="form-group"><label>Video URL</label><input type="url" id="vidUrl" required></div>
+                    <button type="submit" class="submit-btn">Add Video</button>
+                </form>
+            </div>
+            <div id="videos-list" class="grid-list"></div>
+        </div>
+
+        <!-- PROMO CODES -->
+        <div id="promo-codes" class="admin-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>Promo Codes</h2>
+                <button onclick="clearExpiredPromos()" style="background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">Clear Expired</button>
+            </div>
             
-            <!-- VIEW: DASHBOARD -->
-            <div id="view-dashboard" class="view-section active">
-                <div class="header-bar">
-                    <div class="page-title">COMMAND DASHBOARD</div>
-                    <div style="font-size:10px; color:var(--success); border:1px solid var(--success); padding:2px 6px; border-radius:4px;">ONLINE</div>
+            <div style="background:#222; padding:20px; border-radius:12px; text-align:center; max-width:400px; margin:0 auto; border:1px solid var(--primary-accent);">
+                <div class="promo-input-group">
+                    <select id="rewardType" class="promo-select">
+                        <option value="points">Points</option>
+                        <option value="ton">TON</option>
+                    </select>
+                    <input type="number" id="spinPoint" step="any" value="20" placeholder="Amount" style="width:100px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-val" id="d-total-users">0</div>
-                        <i class="fas fa-users" style="position:absolute; bottom:20px; right:20px; font-size:30px; opacity:0.1;"></i>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Joined Today</div>
-                        <div class="stat-val" id="d-today-users" style="color:var(--success)">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pending Withdrawals</div>
-                        <div class="stat-val" id="d-pending-wd" style="color:var(--primary)">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total GG Distributed</div>
-                        <div class="stat-val" id="d-total-gg" style="color:#eab308">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: PROMO CODES -->
-            <div id="view-promo" class="view-section">
-                <div class="header-bar"><div class="page-title">PROMO GENERATOR</div></div>
                 
-                <div class="promo-layout">
-                    <!-- Generator -->
-                    <div class="stat-card promo-form">
-                        <h3 style="color:var(--primary); margin-bottom:20px; font-family:var(--font-head);">CREATE CODE</h3>
-                        
-                        <div style="position:relative;">
-                            <input type="text" id="p-code" placeholder="6-Digit Code" maxlength="6" style="text-align:center; font-weight:bold; letter-spacing:2px; font-size:20px;">
-                            <button onclick="genRandomCode()" style="position:absolute; right:5px; top:5px; padding:8px; background:var(--glass-border); border:none; color:#fff; border-radius:5px; cursor:pointer;"><i class="fas fa-random"></i></button>
-                        </div>
-
-                        <label style="font-size:12px; color:var(--text-muted);">Reward Type</label>
-                        <select id="p-type">
-                            <option value="gg">GG Points</option>
-                            <option value="hash">Hash Power (24h)</option>
-                        </select>
-
-                        <label style="font-size:12px; color:var(--text-muted);">Reward Amount</label>
-                        <input type="number" id="p-amount" placeholder="Ex: 100">
-
-                        <label style="font-size:12px; color:var(--text-muted);">Max Users</label>
-                        <input type="number" id="p-max" placeholder="Ex: 500">
-
-                        <button class="btn-cyber" onclick="deployPromo()">DEPLOY CODE</button>
-                    </div>
-
-                    <!-- List -->
-                    <div class="data-table-container promo-list">
-                        <h4 style="margin-bottom:15px; color:var(--text-muted);">ACTIVE CODES</h4>
-                        <table id="t-promo">
-                            <thead>
-                                <tr>
-                                    <th>CODE</th>
-                                    <th>REWARD</th>
-                                    <th>USAGE</th>
-                                    <th>ACTION</th>
-                                </tr>
-                            </thead>
-                            <tbody id="promo-table-body">
-                                <!-- JS Load -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="promo-input-group">
+                    <label style="color:#aaa; align-self:center; font-size:0.9em;">Max Users:</label>
+                    <input type="number" id="spinMax" value="100" placeholder="Users" style="width:80px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
-            </div>
-
-            <!-- VIEW: USERS -->
-            <div id="view-users" class="view-section">
-                <div class="header-bar">
-                    <div class="page-title">USER MATRIX</div>
-                </div>
-
-                <div class="stat-card" style="margin-bottom:20px; display:flex; flex-direction: column; gap:10px;">
-                    <input type="text" id="u-search" placeholder="Search by Username (no @) or User ID" style="margin:0;">
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn-cyber" style="width:100%;" onclick="searchUser()">SCAN</button>
-                        <button class="btn-small" style="width:100px;" onclick="loadUsers()">RESET</button>
-                    </div>
-                </div>
-
-                <div class="data-table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>IDENTITY</th>
-                                <th>BALANCE</th>
-                                <th>REFS</th>
-                                <th>STATUS</th>
-                                <th>CONTROLS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body">
-                            <!-- JS Load -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- VIEW: FINANCE -->
-            <div id="view-finance" class="view-section">
-                <div class="header-bar"><div class="page-title">FINANCIAL REQUESTS</div></div>
-                <div class="data-table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>USER ID</th>
-                                <th>WALLET / METHOD</th>
-                                <th>AMOUNT</th>
-                                <th>STATUS</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="finance-table-body">
-                            <!-- JS Load -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-             <!-- VIEW: TASKS -->
-             <div id="view-tasks" class="view-section">
-                <div class="header-bar"><div class="page-title">TASK PROTOCOLS</div></div>
                 
-                <div class="promo-layout">
-                    <div class="stat-card promo-form">
-                        <h4 style="margin-bottom:15px;">ADD NEW TASK</h4>
-                        <input type="text" id="task-title" placeholder="Title (e.g. Join Channel)">
-                        <input type="text" id="task-link" placeholder="Link (https://...)">
-                        <input type="number" id="task-reward" placeholder="Reward (GG)">
-                        <button class="btn-cyber" onclick="addTask()">PUBLISH TASK</button>
-                    </div>
-                    <div class="data-table-container promo-list">
-                        <table>
-                            <thead><tr><th>TASK</th><th>REWARD</th><th>ACTION</th></tr></thead>
-                            <tbody id="task-table-body"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <button id="spinBtn" style="background:var(--promo-gradient); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-top:10px;">Generate Code (24h)</button>
+                
+                <div id="generatedCode" style="margin:15px 0; display:flex; justify-content:center; align-items:center; gap:10px; min-height:40px;"></div>
             </div>
-
+            <br>
+            <div id="promo-list" class="grid-list"></div>
         </div>
     </div>
 
-    <!-- FIREBASE LOGIC -->
+    <!-- FIREBASE MODULES -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, updateDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, query, where, orderBy, doc, updateDoc, increment, deleteDoc, setDoc, addDoc, serverTimestamp, runTransaction, Timestamp, limit, getCountFromServer, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyAUQBTiqBfPwM5idPo9GKwuggvyRFKSopE",
-            authDomain: "coinly-tix-ton-fd0c3.firebaseapp.com",
-            databaseURL: "https://coinly-tix-ton-fd0c3-default-rtdb.firebaseio.com",
-            projectId: "coinly-tix-ton-fd0c3",
-            storageBucket: "coinly-tix-ton-fd0c3.firebasestorage.app",
-            messagingSenderId: "204024049838",
-            appId: "1:204024049838:web:b64e08efe08526b0c33d3f",
-            measurementId: "G-PWN256CFRC"
+            apiKey: "AIzaSyAUiFRn61DM4PD-4ssrTxcBG-X7BEldgOk",
+            authDomain: "newtube-ton.firebaseapp.com",
+            databaseURL: "https://newtube-ton-default-rtdb.firebaseio.com",
+            projectId: "newtube-ton",
+            storageBucket: "newtube-ton.firebasestorage.app",
+            messagingSenderId: "41011548816",
+            appId: "1:41011548816:web:9c27139d9487b144ecbe15",
+            measurementId: "G-EVVHZY2HD7"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
         const auth = getAuth(app);
-        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
 
-        // --- MOBILE MENU ---
-        window.toggleSidebar = () => {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        };
-
-        // --- AUTH FLOW ---
+        // --- AUTH ---
+        const loginOverlay = document.getElementById('login-overlay');
+        const adminContent = document.getElementById('admin-content');
+        
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('admin-nexus').style.display = 'flex';
-                initNexus();
+                loginOverlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                loadDashboard();
             } else {
-                document.getElementById('auth-gate').style.display = 'flex';
-                document.getElementById('admin-nexus').style.display = 'none';
+                loginOverlay.style.display = 'flex';
+                adminContent.style.display = 'none';
             }
         });
 
-        window.nexusLogin = async () => {
-            const e = document.getElementById('admin-email').value;
-            const p = document.getElementById('admin-pass').value;
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            signInWithEmailAndPassword(auth, document.getElementById('adminEmail').value, document.getElementById('adminPass').value)
+                .catch(err => document.getElementById('loginMsg').textContent = err.message);
+        });
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+        // --- NAV ---
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn, .admin-section').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.target).classList.add('active');
+                const t = btn.dataset.target;
+                if(t === 'withdrawals') loadWithdrawals();
+                if(t === 'users') loadUsers();
+                if(t === 'manage-tasks') loadTasks();
+                if(t === 'video-add') loadVideos();
+                if(t === 'promo-codes') loadPromoCodes();
+                if(t === 'dashboard') loadDashboard();
+            });
+        });
+
+        // --- DASHBOARD ---
+        async function loadDashboard() {
             try {
-                await signInWithEmailAndPassword(auth, e, p);
-            } catch(err) { showToast(err.message, 'error'); }
-        };
+                const uSnap = await getCountFromServer(collection(db, "users"));
+                document.getElementById('dash-total-users').textContent = uSnap.data().count;
+                
+                const today = new Date(); today.setHours(0,0,0,0);
+                const dSnap = await getCountFromServer(query(collection(db, "users"), where("createdAt", ">=", Timestamp.fromDate(today))));
+                document.getElementById('dash-daily-users').textContent = dSnap.data().count;
 
-        window.nexusLogout = () => signOut(auth);
-
-        // --- CORE FUNCTIONS ---
-        function initNexus() {
-            loadDashboard();
-            loadPromoCodes();
-            loadUsers();
-            loadFinance();
-            loadTasks();
+                const wSnap = await getCountFromServer(query(collection(db, 'withdrawals'), where('status', '==', 'pending')));
+                document.getElementById('dash-pending-withdrawals').textContent = wSnap.data().count;
+                document.getElementById('nav-pending-count').textContent = wSnap.data().count;
+                document.getElementById('nav-pending-count').style.display = wSnap.data().count > 0 ? 'inline-block' : 'none';
+                
+                const tSnap = await getCountFromServer(collection(db, 'tasks'));
+                document.getElementById('dash-active-tasks').textContent = tSnap.data().count;
+            } catch(e) {}
         }
 
-        // 1. DASHBOARD
-        function loadDashboard() {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let total = snap.size;
-                let today = 0;
-                let gg = 0;
-                const todayStr = new Date().toISOString().split('T')[0];
+        // --- WITHDRAWALS ---
+        async function loadWithdrawals() {
+            const list = document.getElementById('withdrawals-list');
+            list.innerHTML = '<div class="loader"></div>';
+            try {
+                const q = query(collection(db, 'withdrawals'), where('status', '==', 'pending'), limit(50));
+                const snap = await getDocs(q);
+                if(snap.empty) { list.innerHTML = '<p style="text-align:center">No Pending Requests.</p>'; return; }
+                const withdrawals = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+                list.innerHTML = '';
+                
+                for(const wd of withdrawals) {
+                    let totalRef = 0;
+                    let successWdCount = 0;
+                    try {
+                        const uSnap = await getDoc(doc(db, 'users', wd.userId));
+                        if(uSnap.exists()) {
+                            const u = uSnap.data();
+                            totalRef = u.referralCount || 0; 
+                        }
+                        const successSnap = await getCountFromServer(query(collection(db, 'withdrawals'), where('userId', '==', wd.userId), where('status', '==', 'approved')));
+                        successWdCount = successSnap.data().count;
+                    } catch(e) {}
+                    
+                    const walletAddr = wd.walletAddress || wd.details || "N/A";
+                    
+                    const div = document.createElement('div');
+                    div.className = 'card-item';
+                    div.innerHTML = `
+                        <div class="card-header">
+                            <div><span class="username">@${wd.telegramUsername || 'No-Name'}</span><br><span class="userid">ID: ${wd.userId}</span></div>
+                            <div style="background:#FFC107; color:black; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:0.8em;">PENDING</div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-row"><span class="stat-label">Total Ref:</span> <span class="stat-val" style="color:var(--primary-accent)">${totalRef} Users</span></div>
+                            <div class="stat-row"><span class="stat-label">Success Withdrawals:</span> <span class="stat-val" style="color:${successWdCount > 0 ? '#00ff88' : '#aaa'}">${successWdCount} Times</span></div>
+                            <hr style="border-color:#444; width:100%; margin:5px 0;">
+                            <div class="stat-row"><span class="stat-label">Requesting:</span> <span class="stat-val" style="font-size:1.1em; color:white;">${wd.pointAmount} Pts</span></div>
+                            <div style="margin-top:5px;"><span style="font-size:0.8em; color:#aaa;">Wallet:</span><div class="wallet-box"><span class="wallet-addr">${walletAddr}</span><button class="btn-copy" onclick="copyTxt('${walletAddr}')">COPY</button></div></div>
+                        </div>
+                        <div class="card-actions"><button class="btn btn-approve" onclick="actionWd('${wd.id}', 'approve')">Approve</button><button class="btn btn-reject" onclick="actionWd('${wd.id}', 'reject', '${wd.userId}', ${wd.pointAmount})">Refund</button></div>`;
+                    list.appendChild(div);
+                }
+            } catch(e) { list.innerHTML = `<p style="color:red">Error: ${e.message}</p>`; }
+        }
 
+        // --- USERS (FIXED SEARCH) ---
+        async function loadUsers(searchVal = "") {
+            const list = document.getElementById('users-list');
+            list.innerHTML = '<div class="loader"></div>';
+            try {
+                let snap = [];
+                const cleanSearch = searchVal.trim();
+                
+                if (cleanSearch) {
+                    // 1. Try Document ID Directly (Best for User ID Search)
+                    // We REMOVED the length check so it works for 9-10 digit Telegram IDs
+                    try {
+                        const docSnap = await getDoc(doc(db, 'users', cleanSearch));
+                        if(docSnap.exists()) {
+                            snap.push(docSnap);
+                        }
+                    } catch(e) { /* Not a valid doc path, ignore */ }
+
+                    // 2. Try Username (If Doc ID didn't find anything)
+                    if (snap.length === 0) {
+                        const usernameClean = cleanSearch.replace('@', '');
+                        const q = query(collection(db, 'users'), where('telegramUsername', '==', usernameClean));
+                        const querySnap = await getDocs(q);
+                        querySnap.forEach(d => snap.push(d));
+                    }
+                } else {
+                    // Default List
+                    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(50));
+                    const querySnap = await getDocs(q);
+                    querySnap.forEach(d => snap.push(d));
+                }
+
+                list.innerHTML = '';
+                if(!snap || snap.length === 0) { list.innerHTML = '<p>No Users Found.</p>'; return; }
+                
                 snap.forEach(d => {
                     const u = d.data();
-                    if (u.joinedAt && u.joinedAt.toDate().toISOString().split('T')[0] === todayStr) today++;
-                    else if (u.lastAdDate === todayStr) { /* Activity proxy */ }
-                    gg += (u.balanceGG || 0);
+                    const isBan = u.isBanned || false;
+                    const div = document.createElement('div');
+                    div.className = `card-item ${isBan?'banned-user':''}`;
+                    div.innerHTML = `
+                        <div class="card-header"><div><span class="username">@${u.telegramUsername || 'No-Name'}</span><br><span class="userid">${d.id}</span></div>${isBan ? '<span style="background:red; color:white; padding:2px; font-size:0.8em; border-radius:3px;">BANNED</span>' : ''}</div>
+                        <div class="card-stats">
+                            <div class="stat-row"><span class="stat-label">Points:</span> <span class="stat-val">${Math.floor(u.pointBalance||0)}</span></div>
+                            <div class="stat-row"><span class="stat-label">TON:</span> <span class="stat-val" style="color:var(--ton-color)">${(u.tonBalance||0).toFixed(4)}</span></div>
+                            <div class="stat-row"><span class="stat-label">Ref:</span> <span class="stat-val">${u.referralCount||0}</span></div>
+                        </div>
+                        <div class="card-actions" style="margin-top:10px;">
+                            <button class="btn btn-pts" onclick="editBal('${d.id}')"><i class="fas fa-coins"></i> Edit Points</button>
+                            <button class="btn btn-ton" onclick="editTon('${d.id}')"><i class="fas fa-gem"></i> Edit TON</button>
+                        </div>
+                        <div class="card-actions" style="margin-top:5px;">
+                            <button class="btn" style="background:${isBan?'#00ff88':'#ff4d4d'}; color:black;" onclick="toggleBan('${d.id}', ${isBan})">${isBan?'UNBAN':'BAN'}</button>
+                        </div>`;
+                    list.appendChild(div);
                 });
+            } catch(e) { list.innerHTML = `<p>Error: ${e.message}</p>`; }
+        }
 
-                document.getElementById('d-total-users').innerText = total;
-                document.getElementById('d-today-users').innerText = today;
-                document.getElementById('d-total-gg').innerText = Math.floor(gg);
+        // --- PROMO CODES ---
+        document.getElementById('spinBtn').addEventListener('click', async()=>{
+            const type = document.getElementById('rewardType').value;
+            const amount = parseFloat(document.getElementById('spinPoint').value);
+            const max = parseInt(document.getElementById('spinMax').value);
+
+            if(!amount || amount <= 0) { alert("Invalid Amount"); return; }
+            
+            const code = Math.floor(100000+Math.random()*900000).toString();
+            const exp = new Date(); 
+            exp.setHours(exp.getHours()+24);
+            
+            await setDoc(doc(db,'promo_codes',code), {
+                code, rewardType: type, rewardAmount: amount, maxUses: max,
+                currentUses: 0, isActive: true, usersClaimed: [], 
+                expiresAt: Timestamp.fromDate(exp), createdAt: serverTimestamp()
             });
 
-            onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "pending")), (snap) => {
-                document.getElementById('d-pending-wd').innerText = snap.size;
+            document.getElementById('generatedCode').innerHTML = `<span style="color:#aaa;">Code:</span> <span style="color:var(--success-color); font-size:1.3em; font-weight:bold; letter-spacing:1px;">${code}</span><span style="color:white; font-size:0.8em; margin-left:5px;">(${amount} ${type.toUpperCase()})</span><button onclick="copyTxt('${code}')" class="btn-copy" style="font-size:0.9em; padding:6px 15px; margin-left:10px;">COPY</button>`;
+            loadPromoCodes();
+        });
+
+        async function loadPromoCodes(){
+            const list = document.getElementById('promo-list');
+            list.innerHTML='<div class="loader"></div>';
+            const snap = await getDocs(query(collection(db,'promo_codes'), orderBy('createdAt','desc'), limit(30)));
+            list.innerHTML='';
+            
+            const now = new Date();
+            snap.forEach(d=>{
+                const p = d.data();
+                let isExpired = false;
+                if(p.expiresAt) { const expiryDate = p.expiresAt.toDate(); if(now > expiryDate) isExpired = true; }
+
+                const div=document.createElement('div'); 
+                div.className='card-item';
+                const statusHtml = isExpired ? '<span style="color:#ff4d4d; font-weight:bold;">EXPIRED ⛔</span>' : '<span style="color:#00ff88; font-weight:bold;">ACTIVE ✅</span>';
+                const isTon = p.rewardType === 'ton';
+                const rewardColor = isTon ? 'var(--ton-color)' : 'var(--success-color)';
+                const rewardLabel = isTon ? 'TON' : 'Points';
+
+                div.innerHTML = `
+                    <div class="card-header"><div style="display:flex; align-items:center; gap:8px;"><h3 style="color:${isExpired ? '#777' : rewardColor}; margin:0;">${p.code}</h3><button class="btn-copy" onclick="copyTxt('${p.code}')" style="padding:2px 6px; font-size:0.7em;">COPY</button></div>${statusHtml}</div>
+                    <div class="card-stats">
+                        <div class="stat-row"><span>Type:</span> <b style="color:${rewardColor}">${rewardLabel}</b></div>
+                        <div class="stat-row"><span>Reward:</span> <b>${p.rewardAmount}</b></div>
+                        <div class="stat-row"><span>Used:</span> <b>${p.currentUses}/${p.maxUses}</b></div>
+                        <div class="stat-row"><span style="font-size:0.8em; color:#aaa;">Expires: ${p.expiresAt ? p.expiresAt.toDate().toLocaleString() : 'N/A'}</span></div>
+                    </div>
+                    <button class="btn btn-reject" style="width:100%; margin-top:10px;" onclick="delDoc('promo_codes','${d.id}')">Delete</button>
+                `;
+                list.appendChild(div);
             });
         }
 
-        // 2. PROMO CODES
-        window.genRandomCode = () => {
-            document.getElementById('p-code').value = Math.floor(100000 + Math.random() * 900000);
-        }
-
-        window.deployPromo = async () => {
-            const code = document.getElementById('p-code').value;
-            const type = document.getElementById('p-type').value;
-            const amount = Number(document.getElementById('p-amount').value);
-            const max = Number(document.getElementById('p-max').value);
-
-            if(!code || !amount || !max) return showToast("Invalid Inputs", "error");
-
-            const data = {
-                active: true,
-                maxUsers: max,
-                currentUsers: 0,
-                createdAt: serverTimestamp()
-            };
-            if(type === 'gg') data.rewardGG = amount; else data.rewardHash = amount;
-
+        window.clearExpiredPromos = async () => {
+            if(!confirm("Delete ALL expired codes?")) return;
+            const now = new Date();
+            const q = query(collection(db, "promo_codes"), where("expiresAt", "<=", Timestamp.fromDate(now)));
             try {
-                await setDoc(doc(db, "promoCodes", code), data);
-                showToast("Promo Deployed Successfully", "success");
-                document.getElementById('p-code').value = "";
-            } catch(e) { showToast(e.message, 'error'); }
-        }
+                const snap = await getDocs(q);
+                if(snap.empty) { alert("No expired codes."); return; }
+                const batch = writeBatch(db);
+                snap.forEach(d => { batch.delete(d.ref); });
+                await batch.commit();
+                alert(`Deleted ${snap.size} codes.`);
+                loadPromoCodes();
+            } catch(e) { alert("Error: " + e.message); }
+        };
 
-        function loadPromoCodes() {
-            onSnapshot(collection(db, "promoCodes"), (snap) => {
-                const tbody = document.getElementById('promo-table-body');
-                tbody.innerHTML = "";
-                snap.forEach(d => {
-                    const p = d.data();
-                    const rwd = p.rewardGG ? `${p.rewardGG} GG` : `${p.rewardHash} HASH`;
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="color:var(--primary); font-weight:bold; letter-spacing:1px;">${d.id}</td>
-                            <td>${rwd}</td>
-                            <td>${p.currentUsers} / ${p.maxUsers}</td>
-                            <td><button class="btn-small danger" onclick="delPromo('${d.id}')"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                    `;
-                });
-            });
-        }
-        window.delPromo = async (id) => { if(confirm("Delete Code?")) await deleteDoc(doc(db, "promoCodes", id)); }
-
-        // 3. USER MATRIX
-        window.loadUsers = () => {
-            onSnapshot(query(collection(db, "users"), orderBy("balanceGG", "desc"), limit(20)), (snap) => renderUsers(snap));
-        }
-
-        window.searchUser = async () => {
-            const q = document.getElementById('u-search').value.trim();
-            if(!q) return loadUsers();
-            
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = "<tr><td colspan='5'>Scanning...</td></tr>";
-
-            const docRef = await getDoc(doc(db, "users", q));
-            if(docRef.exists()) {
-                tbody.innerHTML = "";
-                renderRow(docRef, tbody);
-            } else {
-                const qSnap = await getDocs(query(collection(db, "users"), where("username", "==", q)));
-                if(!qSnap.empty) {
-                    tbody.innerHTML = "";
-                    qSnap.forEach(d => renderRow(d, tbody));
-                } else {
-                    tbody.innerHTML = "<tr><td colspan='5' style='color:var(--danger)'>User Not Found</td></tr>";
-                }
+        // --- GLOBAL ACTIONS ---
+        window.copyTxt = (txt) => { navigator.clipboard.writeText(txt).then(()=>alert("Copied!")); }
+        window.searchUser = () => loadUsers(document.getElementById('userSearch').value);
+        window.toggleBan = async (uid, c) => { if(confirm(c?"Unban user?":"Ban user?")) { await updateDoc(doc(db,'users',uid), { isBanned: !c }); loadUsers(document.getElementById('userSearch').value); } }
+        
+        window.editBal = async (uid) => { 
+            const a = prompt("Add Points (e.g., 50) or Deduct (e.g., -50):"); 
+            if(a && !isNaN(a)) { 
+                await updateDoc(doc(db,'users',uid), { pointBalance: increment(parseFloat(a)) }); 
+                alert("Points Updated");
+                loadUsers(document.getElementById('userSearch').value); 
             }
         }
-
-        function renderUsers(snap) {
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = "";
-            snap.forEach(d => renderRow(d, tbody));
-        }
-
-        function renderRow(d, tbody) {
-            const u = d.data();
-            const row = `
-                <tr>
-                    <td>
-                        <div style="font-weight:bold; color:#fff;">${u.firstName}</div>
-                        <div style="font-size:12px; color:var(--text-muted);">UID: ${d.id} | @${u.username}</div>
-                    </td>
-                    <td><span style="color:var(--primary)">${Math.floor(u.balanceGG || 0)} GG</span></td>
-                    <td>${u.referrals || 0}</td>
-                    <td><span class="badge ${u.isBanned ? 'badge-danger':'badge-success'}">${u.isBanned ? 'BANNED' : 'ACTIVE'}</span></td>
-                    <td>
-                        <button class="btn-small ${u.isBanned ? 'success' : 'danger'}" onclick="toggleBan('${d.id}', ${u.isBanned})">
-                            ${u.isBanned ? '<i class="fas fa-unlock"></i>' : '<i class="fas fa-ban"></i>'}
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tbody.innerHTML += row;
-        }
-        window.toggleBan = async (id, status) => { await updateDoc(doc(db, "users", id), { isBanned: !status }); }
-
-        // 4. FINANCE
-        function loadFinance() {
-            onSnapshot(query(collection(db, "withdrawals"), orderBy("date", "desc"), limit(50)), (snap) => {
-                const tbody = document.getElementById('finance-table-body');
-                tbody.innerHTML = "";
-                snap.forEach(d => {
-                    const w = d.data();
-                    const isPending = w.status === 'pending';
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-size:12px;">${w.userId}</td>
-                            <td>
-                                <div style="color:var(--text-muted); font-size:11px;">${w.method}</div>
-                                <div onclick="navigator.clipboard.writeText('${w.address}')" style="cursor:pointer; color:#fff;">
-                                    ${w.address.substring(0,10)}... <i class="fas fa-copy" style="font-size:10px;"></i>
-                                </div>
-                            </td>
-                            <td style="color:var(--success); font-weight:bold;">${w.amount} GG</td>
-                            <td><span class="badge ${isPending ? 'badge-pending':'badge-success'}">${w.status}</span></td>
-                            <td>
-                                ${isPending ? `<button class="btn-small success" onclick="pay('${d.id}')">APPROVE</button>` : '<i class="fas fa-check" style="color:var(--success)"></i>'}
-                            </td>
-                        </tr>
-                    `;
-                });
-            });
-        }
-        window.pay = async (id) => { if(confirm("Mark Paid?")) await updateDoc(doc(db, "withdrawals", id), { status: 'paid' }); }
-
-        // 5. TASKS
-        function loadTasks() {
-            onSnapshot(collection(db, "adminTasks"), (snap) => {
-                const tbody = document.getElementById('task-table-body');
-                tbody.innerHTML = "";
-                snap.forEach(d => {
-                    const t = d.data();
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${t.title}</td>
-                            <td style="color:var(--primary)">${t.reward} GG</td>
-                            <td><button class="btn-small danger" onclick="delTask('${d.id}')"><i class="fas fa-times"></i></button></td>
-                        </tr>
-                    `;
-                });
-            });
-        }
-        window.addTask = async () => {
-            const title = document.getElementById('task-title').value;
-            const link = document.getElementById('task-link').value;
-            const reward = Number(document.getElementById('task-reward').value);
-            if(title && reward) {
-                await setDoc(doc(collection(db, "adminTasks")), { title, link, reward });
-                showToast("Task Added", "success");
-                document.getElementById('task-title').value = "";
-                document.getElementById('task-link').value = "";
-                document.getElementById('task-reward').value = "";
+        
+        window.editTon = async (uid) => { 
+            const a = prompt("Add TON (e.g., 0.5) or Deduct (e.g., -0.5):"); 
+            if(a && !isNaN(a)) { 
+                await updateDoc(doc(db,'users',uid), { tonBalance: increment(parseFloat(a)) }); 
+                alert("TON Updated");
+                loadUsers(document.getElementById('userSearch').value); 
             }
         }
-        window.delTask = async (id) => deleteDoc(doc(db, "adminTasks", id));
-
-        // --- UI HELPERS ---
-        window.navTo = (viewId, el) => {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-'+viewId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-            
-            // Close mobile menu if open
-            if(window.innerWidth <= 768) toggleSidebar();
+        
+        window.actionWd = async (id, type, uid, amt) => {
+            if(!confirm(`Confirm ${type}?`)) return;
+            try {
+                const wRef = doc(db, 'withdrawals', id);
+                if(type === 'approve') await updateDoc(wRef, { status: 'approved' });
+                else await runTransaction(db, async(t) => { t.update(wRef, { status: 'rejected' }); t.update(doc(db,'users',uid), { pointBalance: increment(amt) }); });
+                loadWithdrawals(); loadDashboard();
+            } catch(e) { alert("Error: " + e); }
         }
 
-        function showToast(msg, type) {
-            const div = document.createElement('div');
-            div.className = 'toast';
-            div.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-triangle':'fa-check-circle'}" style="color:${type==='error'?'var(--danger)':'var(--success)'}"></i> ${msg}`;
-            document.getElementById('toast-container').appendChild(div);
-            setTimeout(() => div.remove(), 3000);
+        document.getElementById('createTaskForm').addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            await addDoc(collection(db,'tasks'), {
+                title: document.getElementById('taskTitle').value, url: document.getElementById('taskUrl').value,
+                rewardPoints: parseInt(document.getElementById('taskReward').value), limit: parseInt(document.getElementById('taskLimit').value),
+                completionCount: 0, isApproved: true, createdAt: serverTimestamp()
+            });
+            alert("Created"); e.target.reset();
+        });
+        async function loadTasks() {
+            const list = document.getElementById('tasks-list'); list.innerHTML='<div class="loader"></div>';
+            const snap = await getDocs(query(collection(db,'tasks'), orderBy('createdAt','desc'), limit(50)));
+            list.innerHTML='';
+            snap.forEach(d=>{ const t=d.data(); list.innerHTML+=`<div class="card-item"><b>${t.title}</b><br>Rew: ${t.rewardPoints} | ${t.completionCount}/${t.limit}<br><button class="btn btn-reject" onclick="delDoc('tasks','${d.id}')">Delete</button></div>`; });
         }
+        window.delDoc = async(col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db,col,id)); if(col==='tasks') loadTasks(); if(col==='watch_videos') loadVideos(); if(col==='promo_codes') loadPromoCodes(); } }
 
+        document.getElementById('addVideoForm').addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            await addDoc(collection(db,'watch_videos'), { thumbnailUrl: document.getElementById('vidThumb').value, videoUrl: document.getElementById('vidUrl').value, createdAt: serverTimestamp() });
+            alert("Added"); e.target.reset(); loadVideos();
+        });
+        async function loadVideos() {
+            const list = document.getElementById('videos-list'); list.innerHTML='<div class="loader"></div>';
+            const snap = await getDocs(query(collection(db,'watch_videos'), orderBy('createdAt','desc')));
+            list.innerHTML='';
+            snap.forEach(d=>{ const v=d.data(); list.innerHTML+=`<div class="card-item"><img src="${v.thumbnailUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;"><br><small>${v.videoUrl}</small><br><button class="btn btn-reject" onclick="delDoc('watch_videos','${d.id}')">Delete</button></div>`; });
+        }
     </script>
 </body>
 </html>
