@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEW TON - Super Admin Panel</title>
+    <title>Coinly TON - Super Admin Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --bg-dark: #121212;
@@ -18,7 +21,7 @@
             --success-color: #00ff88;
             --danger-color: #ff4d4d;
             --warning-color: #FFC107;
-            --ton-color: #0098EA;
+            --token-color: #9b59b6; 
             --promo-gradient: linear-gradient(45deg, #ff00cc, #333399);
         }
 
@@ -108,16 +111,10 @@
         .btn { padding: 8px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; flex: 1; color: white; transition: 0.2s;}
         .btn-approve { background-color: var(--success-color); color: black; }
         .btn-reject { background-color: var(--danger-color); }
-        .btn-ton { background-color: var(--ton-color); color:white;}
+        .btn-ton { background-color: var(--token-color); color:white;}
         .btn-pts { background-color: #FF9800; color:black;}
         .btn-copy { background: #444; padding: 4px 10px; font-size: 0.75em; border: 1px solid #666; border-radius: 4px; color: white; cursor: pointer; }
         .btn-copy:hover { background: #555; }
-
-        .withdrawal-badge {
-            background: #333; color: var(--success-color); border: 1px solid var(--success-color);
-            border-radius: 12px; padding: 2px 8px; font-size: 0.75rem; display: inline-block;
-            margin-top: 4px;
-        }
 
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); }
@@ -136,7 +133,7 @@
     <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
         <div class="login-box">
-            <h2>Admin Access</h2>
+            <h2>Coinly Admin</h2>
             <form id="loginForm">
                 <input type="email" id="adminEmail" placeholder="Admin Email" required>
                 <input type="password" id="adminPass" placeholder="Password" required>
@@ -149,7 +146,7 @@
     <!-- MAIN ADMIN CONTENT -->
     <div id="admin-content" class="admin-container">
         <header class="admin-header">
-            <h1>NEW TON <span style="font-size:0.5em; color:#fff;">Admin Panel</span></h1>
+            <h1>COINLY TON <span style="font-size:0.5em; color:#fff;">Control Nexus</span></h1>
             <button class="logout-btn" id="logoutBtn">Logout</button>
         </header>
 
@@ -159,7 +156,6 @@
             <button class="nav-btn" data-target="withdrawals">Withdrawals <span id="nav-pending-count" style="background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.8em; display:none;">0</span></button>
             <button class="nav-btn" data-target="tasks">Add Task</button>
             <button class="nav-btn" data-target="manage-tasks">Manage Tasks</button>
-            <button class="nav-btn" data-target="video-add" style="border-color:#ff4d4d; color:#ff4d4d;">Video</button>
             <button class="nav-btn" data-target="promo-codes" style="border-color:#ff00cc; color:#ff00cc;">Promo Codes</button>
         </nav>
 
@@ -168,23 +164,23 @@
             <h2>Overview</h2>
             <div class="dashboard-grid">
                 <div class="dash-card"><h3>Total Users</h3><p class="count" id="dash-total-users">...</p></div>
-                <div class="dash-card"><h3>Daily New Users</h3><p class="count" id="dash-daily-users">0</p><p style="font-size:0.8em; color:#777;">Joined Today</p></div>
+                <div class="dash-card"><h3>Joined Today</h3><p class="count" id="dash-daily-users">0</p></div>
                 <div class="dash-card"><h3>Pending Withdrawals</h3><p class="count" id="dash-pending-withdrawals">0</p></div>
                 <div class="dash-card"><h3>Active Tasks</h3><p class="count" id="dash-active-tasks">0</p></div>
             </div>
         </div>
 
-        <!-- WITHDRAWALS (Updated) -->
+        <!-- WITHDRAWALS -->
         <div id="withdrawals" class="admin-section">
             <h2>Withdrawal Requests</h2>
             <div id="withdrawals-list" class="grid-list"></div>
         </div>
 
-        <!-- USERS (Updated Search) -->
+        <!-- USERS -->
         <div id="users" class="admin-section">
             <h2>Users Management
                 <div style="display:inline-block; margin-left:15px;">
-                    <input type="text" id="userSearch" placeholder="Enter ID or Username..." style="padding:8px; width:200px; background:#333; color:white; border:1px solid #555; border-radius:4px;"> 
+                    <input type="text" id="userSearch" placeholder="UID or Username..." style="padding:8px; width:200px; background:#333; color:white; border:1px solid #555; border-radius:4px;"> 
                     <button onclick="searchUser()" class="btn" style="background:var(--primary-accent); color:black; flex:0; width:auto; padding:8px 15px;">Search</button>
                     <button onclick="loadUsers()" class="btn" style="background:#444; color:white; flex:0; width:auto; padding:8px 15px;">Reset</button>
                 </div>
@@ -199,9 +195,8 @@
                 <form id="createTaskForm">
                     <div class="form-group"><label>Title</label><input type="text" id="taskTitle" required></div>
                     <div class="form-group"><label>URL</label><input type="url" id="taskUrl" required></div>
-                    <div class="form-group"><label>Reward (Points)</label><input type="number" id="taskReward" required></div>
-                    <div class="form-group"><label>Limit</label><input type="number" id="taskLimit" required></div>
-                    <button type="submit" class="submit-btn">Create</button>
+                    <div class="form-group"><label>Reward (GG)</label><input type="number" id="taskReward" required></div>
+                    <button type="submit" class="submit-btn">Create Task</button>
                 </form>
             </div>
         </div>
@@ -210,19 +205,6 @@
         <div id="manage-tasks" class="admin-section">
             <h2>Active Tasks</h2>
             <div id="tasks-list" class="grid-list"></div>
-        </div>
-
-        <!-- VIDEO -->
-        <div id="video-add" class="admin-section">
-            <h2>Add Video</h2>
-            <div style="max-width:500px; margin:0 auto; background:var(--bg-card); padding:20px; border-radius:12px; margin-bottom:20px;">
-                <form id="addVideoForm">
-                    <div class="form-group"><label>Thumb URL</label><input type="url" id="vidThumb" required></div>
-                    <div class="form-group"><label>Video URL</label><input type="url" id="vidUrl" required></div>
-                    <button type="submit" class="submit-btn">Add Video</button>
-                </form>
-            </div>
-            <div id="videos-list" class="grid-list"></div>
         </div>
 
         <!-- PROMO CODES -->
@@ -235,10 +217,10 @@
             <div style="background:#222; padding:20px; border-radius:12px; text-align:center; max-width:400px; margin:0 auto; border:1px solid var(--primary-accent);">
                 <div class="promo-input-group">
                     <select id="rewardType" class="promo-select">
-                        <option value="points">Points</option>
-                        <option value="ton">TON</option>
+                        <option value="gg">GG Points</option>
+                        <option value="hash">Hash Power</option>
                     </select>
-                    <input type="number" id="spinPoint" step="any" value="20" placeholder="Amount" style="width:100px; padding:5px; background:#333; color:white; border:1px solid #555;">
+                    <input type="number" id="spinPoint" value="50" placeholder="Amount" style="width:100px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
                 
                 <div class="promo-input-group">
@@ -246,7 +228,7 @@
                     <input type="number" id="spinMax" value="100" placeholder="Users" style="width:80px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
                 
-                <button id="spinBtn" style="background:var(--promo-gradient); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-top:10px;">Generate Code (24h)</button>
+                <button id="spinBtn" style="background:var(--promo-gradient); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-top:10px;">Generate Code</button>
                 
                 <div id="generatedCode" style="margin:15px 0; display:flex; justify-content:center; align-items:center; gap:10px; min-height:40px;"></div>
             </div>
@@ -255,21 +237,21 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULES -->
+    <!-- FIREBASE MODULES (12.9.0) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, getDocs, getDoc, query, where, orderBy, doc, updateDoc, increment, deleteDoc, setDoc, addDoc, serverTimestamp, runTransaction, Timestamp, limit, getCountFromServer, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, query, where, orderBy, doc, updateDoc, increment, deleteDoc, setDoc, addDoc, serverTimestamp, runTransaction, Timestamp, limit, getCountFromServer, writeBatch } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
+        // COINLY CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyAUiFRn61DM4PD-4ssrTxcBG-X7BEldgOk",
-            authDomain: "newtube-ton.firebaseapp.com",
-            databaseURL: "https://newtube-ton-default-rtdb.firebaseio.com",
-            projectId: "newtube-ton",
-            storageBucket: "newtube-ton.firebasestorage.app",
-            messagingSenderId: "41011548816",
-            appId: "1:41011548816:web:9c27139d9487b144ecbe15",
-            measurementId: "G-EVVHZY2HD7"
+            apiKey: "AIzaSyAUQBTiqBfPwM5idPo9GKwuggvyRFKSopE",
+            authDomain: "coinly-tix-ton-fd0c3.firebaseapp.com",
+            databaseURL: "https://coinly-tix-ton-fd0c3-default-rtdb.firebaseio.com",
+            projectId: "coinly-tix-ton-fd0c3",
+            storageBucket: "coinly-tix-ton-fd0c3.firebasestorage.app",
+            messagingSenderId: "204024049838",
+            appId: "1:204024049838:web:b64e08efe08526b0c33d3f"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -308,7 +290,6 @@
                 if(t === 'withdrawals') loadWithdrawals();
                 if(t === 'users') loadUsers();
                 if(t === 'manage-tasks') loadTasks();
-                if(t === 'video-add') loadVideos();
                 if(t === 'promo-codes') loadPromoCodes();
                 if(t === 'dashboard') loadDashboard();
             });
@@ -317,21 +298,28 @@
         // --- DASHBOARD ---
         async function loadDashboard() {
             try {
+                // Count Users
                 const uSnap = await getCountFromServer(collection(db, "users"));
                 document.getElementById('dash-total-users').textContent = uSnap.data().count;
                 
-                const today = new Date(); today.setHours(0,0,0,0);
-                const dSnap = await getCountFromServer(query(collection(db, "users"), where("createdAt", ">=", Timestamp.fromDate(today))));
+                // Count Today's Joiners (Approx using lastAdDate or client side check if field missing)
+                // For accuracy, we assume 'joinedAt' exists, or fallback to 0
+                const today = new Date().toISOString().split('T')[0];
+                // Note: Coinly schema stores lastAdDate. We might not have 'joinedAt' on old users.
+                // We will try to count, but if fails, it displays 0.
+                const dSnap = await getCountFromServer(query(collection(db, "users"), where("lastAdDate", "==", today)));
                 document.getElementById('dash-daily-users').textContent = dSnap.data().count;
 
+                // Pending Withdrawals
                 const wSnap = await getCountFromServer(query(collection(db, 'withdrawals'), where('status', '==', 'pending')));
                 document.getElementById('dash-pending-withdrawals').textContent = wSnap.data().count;
                 document.getElementById('nav-pending-count').textContent = wSnap.data().count;
                 document.getElementById('nav-pending-count').style.display = wSnap.data().count > 0 ? 'inline-block' : 'none';
                 
-                const tSnap = await getCountFromServer(collection(db, 'tasks'));
+                // Active Tasks
+                const tSnap = await getCountFromServer(collection(db, 'adminTasks'));
                 document.getElementById('dash-active-tasks').textContent = tSnap.data().count;
-            } catch(e) {}
+            } catch(e) { console.log(e); }
         }
 
         // --- WITHDRAWALS ---
@@ -342,45 +330,39 @@
                 const q = query(collection(db, 'withdrawals'), where('status', '==', 'pending'), limit(50));
                 const snap = await getDocs(q);
                 if(snap.empty) { list.innerHTML = '<p style="text-align:center">No Pending Requests.</p>'; return; }
-                const withdrawals = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+                
+                // Sort client side as createdAt might be missing on old docs
+                const withdrawals = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.date?.seconds||0) - (a.date?.seconds||0));
                 list.innerHTML = '';
                 
                 for(const wd of withdrawals) {
                     let totalRef = 0;
-                    let successWdCount = 0;
                     try {
                         const uSnap = await getDoc(doc(db, 'users', wd.userId));
-                        if(uSnap.exists()) {
-                            const u = uSnap.data();
-                            totalRef = u.referralCount || 0; 
-                        }
-                        const successSnap = await getCountFromServer(query(collection(db, 'withdrawals'), where('userId', '==', wd.userId), where('status', '==', 'approved')));
-                        successWdCount = successSnap.data().count;
+                        if(uSnap.exists()) totalRef = uSnap.data().referrals || 0;
                     } catch(e) {}
-                    
-                    const walletAddr = wd.walletAddress || wd.details || "N/A";
                     
                     const div = document.createElement('div');
                     div.className = 'card-item';
                     div.innerHTML = `
                         <div class="card-header">
-                            <div><span class="username">@${wd.telegramUsername || 'No-Name'}</span><br><span class="userid">ID: ${wd.userId}</span></div>
+                            <div><span class="userid">ID: ${wd.userId}</span></div>
                             <div style="background:#FFC107; color:black; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:0.8em;">PENDING</div>
                         </div>
                         <div class="card-stats">
-                            <div class="stat-row"><span class="stat-label">Total Ref:</span> <span class="stat-val" style="color:var(--primary-accent)">${totalRef} Users</span></div>
-                            <div class="stat-row"><span class="stat-label">Success Withdrawals:</span> <span class="stat-val" style="color:${successWdCount > 0 ? '#00ff88' : '#aaa'}">${successWdCount} Times</span></div>
+                            <div class="stat-row"><span class="stat-label">Refs:</span> <span class="stat-val" style="color:var(--primary-accent)">${totalRef}</span></div>
                             <hr style="border-color:#444; width:100%; margin:5px 0;">
-                            <div class="stat-row"><span class="stat-label">Requesting:</span> <span class="stat-val" style="font-size:1.1em; color:white;">${wd.pointAmount} Pts</span></div>
-                            <div style="margin-top:5px;"><span style="font-size:0.8em; color:#aaa;">Wallet:</span><div class="wallet-box"><span class="wallet-addr">${walletAddr}</span><button class="btn-copy" onclick="copyTxt('${walletAddr}')">COPY</button></div></div>
+                            <div class="stat-row"><span class="stat-label">Amount:</span> <span class="stat-val" style="font-size:1.1em; color:white;">${wd.amount} GG</span></div>
+                            <div class="stat-row"><span class="stat-label">Method:</span> <span class="stat-val">${wd.method}</span></div>
+                            <div style="margin-top:5px;"><span style="font-size:0.8em; color:#aaa;">Wallet:</span><div class="wallet-box"><span class="wallet-addr">${wd.address}</span><button class="btn-copy" onclick="copyTxt('${wd.address}')">COPY</button></div></div>
                         </div>
-                        <div class="card-actions"><button class="btn btn-approve" onclick="actionWd('${wd.id}', 'approve')">Approve</button><button class="btn btn-reject" onclick="actionWd('${wd.id}', 'reject', '${wd.userId}', ${wd.pointAmount})">Refund</button></div>`;
+                        <div class="card-actions"><button class="btn btn-approve" onclick="actionWd('${wd.id}', 'paid')">Mark Paid</button><button class="btn btn-reject" onclick="actionWd('${wd.id}', 'reject', '${wd.userId}', ${wd.amount})">Refund</button></div>`;
                     list.appendChild(div);
                 }
             } catch(e) { list.innerHTML = `<p style="color:red">Error: ${e.message}</p>`; }
         }
 
-        // --- USERS (FIXED SEARCH) ---
+        // --- USERS ---
         async function loadUsers(searchVal = "") {
             const list = document.getElementById('users-list');
             list.innerHTML = '<div class="loader"></div>';
@@ -389,27 +371,21 @@
                 const cleanSearch = searchVal.trim();
                 
                 if (cleanSearch) {
-                    // 1. Try Document ID Directly (Best for User ID Search)
-                    // We REMOVED the length check so it works for 9-10 digit Telegram IDs
+                    // Search by ID
                     try {
                         const docSnap = await getDoc(doc(db, 'users', cleanSearch));
-                        if(docSnap.exists()) {
-                            snap.push(docSnap);
-                        }
-                    } catch(e) { /* Not a valid doc path, ignore */ }
+                        if(docSnap.exists()) snap = [docSnap];
+                    } catch(e) {}
 
-                    // 2. Try Username (If Doc ID didn't find anything)
+                    // Search by Username
                     if (snap.length === 0) {
                         const usernameClean = cleanSearch.replace('@', '');
-                        const q = query(collection(db, 'users'), where('telegramUsername', '==', usernameClean));
-                        const querySnap = await getDocs(q);
-                        querySnap.forEach(d => snap.push(d));
+                        const q = query(collection(db, 'users'), where('username', '==', usernameClean));
+                        snap = (await getDocs(q)).docs;
                     }
                 } else {
-                    // Default List
-                    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(50));
-                    const querySnap = await getDocs(q);
-                    querySnap.forEach(d => snap.push(d));
+                    const q = query(collection(db, 'users'), orderBy('balanceGG', 'desc'), limit(50));
+                    snap = (await getDocs(q)).docs;
                 }
 
                 list.innerHTML = '';
@@ -421,15 +397,15 @@
                     const div = document.createElement('div');
                     div.className = `card-item ${isBan?'banned-user':''}`;
                     div.innerHTML = `
-                        <div class="card-header"><div><span class="username">@${u.telegramUsername || 'No-Name'}</span><br><span class="userid">${d.id}</span></div>${isBan ? '<span style="background:red; color:white; padding:2px; font-size:0.8em; border-radius:3px;">BANNED</span>' : ''}</div>
+                        <div class="card-header"><div><span class="username">${u.firstName || 'User'}</span><br><span class="userid">${d.id}</span></div>${isBan ? '<span style="background:red; color:white; padding:2px; font-size:0.8em; border-radius:3px;">BANNED</span>' : ''}</div>
                         <div class="card-stats">
-                            <div class="stat-row"><span class="stat-label">Points:</span> <span class="stat-val">${Math.floor(u.pointBalance||0)}</span></div>
-                            <div class="stat-row"><span class="stat-label">TON:</span> <span class="stat-val" style="color:var(--ton-color)">${(u.tonBalance||0).toFixed(4)}</span></div>
-                            <div class="stat-row"><span class="stat-label">Ref:</span> <span class="stat-val">${u.referralCount||0}</span></div>
+                            <div class="stat-row"><span class="stat-label">GG:</span> <span class="stat-val">${Math.floor(u.balanceGG||0)}</span></div>
+                            <div class="stat-row"><span class="stat-label">Tokens:</span> <span class="stat-val" style="color:var(--token-color)">${u.gameTokens||0}</span></div>
+                            <div class="stat-row"><span class="stat-label">Refs:</span> <span class="stat-val">${u.referrals||0}</span></div>
                         </div>
                         <div class="card-actions" style="margin-top:10px;">
-                            <button class="btn btn-pts" onclick="editBal('${d.id}')"><i class="fas fa-coins"></i> Edit Points</button>
-                            <button class="btn btn-ton" onclick="editTon('${d.id}')"><i class="fas fa-gem"></i> Edit TON</button>
+                            <button class="btn btn-pts" onclick="editBal('${d.id}')"><i class="fas fa-coins"></i> Edit GG</button>
+                            <button class="btn btn-ton" onclick="editTokens('${d.id}')" style="background:var(--token-color)"><i class="fas fa-gamepad"></i> Edit Tokens</button>
                         </div>
                         <div class="card-actions" style="margin-top:5px;">
                             <button class="btn" style="background:${isBan?'#00ff88':'#ff4d4d'}; color:black;" onclick="toggleBan('${d.id}', ${isBan})">${isBan?'UNBAN':'BAN'}</button>
@@ -448,14 +424,18 @@
             if(!amount || amount <= 0) { alert("Invalid Amount"); return; }
             
             const code = Math.floor(100000+Math.random()*900000).toString();
-            const exp = new Date(); 
-            exp.setHours(exp.getHours()+24);
             
-            await setDoc(doc(db,'promo_codes',code), {
-                code, rewardType: type, rewardAmount: amount, maxUses: max,
-                currentUses: 0, isActive: true, usersClaimed: [], 
-                expiresAt: Timestamp.fromDate(exp), createdAt: serverTimestamp()
-            });
+            // Coinly Schema
+            let data = {
+                active: true,
+                maxUsers: max,
+                currentUsers: 0,
+                createdAt: serverTimestamp()
+            };
+            if(type === 'gg') data.rewardGG = amount;
+            else data.rewardHash = amount;
+            
+            await setDoc(doc(db,'promoCodes',code), data);
 
             document.getElementById('generatedCode').innerHTML = `<span style="color:#aaa;">Code:</span> <span style="color:var(--success-color); font-size:1.3em; font-weight:bold; letter-spacing:1px;">${code}</span><span style="color:white; font-size:0.8em; margin-left:5px;">(${amount} ${type.toUpperCase()})</span><button onclick="copyTxt('${code}')" class="btn-copy" style="font-size:0.9em; padding:6px 15px; margin-left:10px;">COPY</button>`;
             loadPromoCodes();
@@ -464,49 +444,28 @@
         async function loadPromoCodes(){
             const list = document.getElementById('promo-list');
             list.innerHTML='<div class="loader"></div>';
-            const snap = await getDocs(query(collection(db,'promo_codes'), orderBy('createdAt','desc'), limit(30)));
+            const snap = await getDocs(query(collection(db,'promoCodes'), orderBy('createdAt','desc'), limit(30)));
             list.innerHTML='';
             
-            const now = new Date();
             snap.forEach(d=>{
                 const p = d.data();
-                let isExpired = false;
-                if(p.expiresAt) { const expiryDate = p.expiresAt.toDate(); if(now > expiryDate) isExpired = true; }
-
                 const div=document.createElement('div'); 
                 div.className='card-item';
-                const statusHtml = isExpired ? '<span style="color:#ff4d4d; font-weight:bold;">EXPIRED ⛔</span>' : '<span style="color:#00ff88; font-weight:bold;">ACTIVE ✅</span>';
-                const isTon = p.rewardType === 'ton';
-                const rewardColor = isTon ? 'var(--ton-color)' : 'var(--success-color)';
-                const rewardLabel = isTon ? 'TON' : 'Points';
-
+                const rewardTxt = p.rewardGG ? `${p.rewardGG} GG` : `${p.rewardHash} Hash`;
                 div.innerHTML = `
-                    <div class="card-header"><div style="display:flex; align-items:center; gap:8px;"><h3 style="color:${isExpired ? '#777' : rewardColor}; margin:0;">${p.code}</h3><button class="btn-copy" onclick="copyTxt('${p.code}')" style="padding:2px 6px; font-size:0.7em;">COPY</button></div>${statusHtml}</div>
+                    <div class="card-header"><div style="display:flex; align-items:center; gap:8px;"><h3 style="color:var(--success-color); margin:0;">${d.id}</h3><button class="btn-copy" onclick="copyTxt('${d.id}')" style="padding:2px 6px; font-size:0.7em;">COPY</button></div></div>
                     <div class="card-stats">
-                        <div class="stat-row"><span>Type:</span> <b style="color:${rewardColor}">${rewardLabel}</b></div>
-                        <div class="stat-row"><span>Reward:</span> <b>${p.rewardAmount}</b></div>
-                        <div class="stat-row"><span>Used:</span> <b>${p.currentUses}/${p.maxUses}</b></div>
-                        <div class="stat-row"><span style="font-size:0.8em; color:#aaa;">Expires: ${p.expiresAt ? p.expiresAt.toDate().toLocaleString() : 'N/A'}</span></div>
+                        <div class="stat-row"><span>Reward:</span> <b>${rewardTxt}</b></div>
+                        <div class="stat-row"><span>Used:</span> <b>${p.currentUsers}/${p.maxUsers}</b></div>
                     </div>
-                    <button class="btn btn-reject" style="width:100%; margin-top:10px;" onclick="delDoc('promo_codes','${d.id}')">Delete</button>
+                    <button class="btn btn-reject" style="width:100%; margin-top:10px;" onclick="delDoc('promoCodes','${d.id}')">Delete</button>
                 `;
                 list.appendChild(div);
             });
         }
 
         window.clearExpiredPromos = async () => {
-            if(!confirm("Delete ALL expired codes?")) return;
-            const now = new Date();
-            const q = query(collection(db, "promo_codes"), where("expiresAt", "<=", Timestamp.fromDate(now)));
-            try {
-                const snap = await getDocs(q);
-                if(snap.empty) { alert("No expired codes."); return; }
-                const batch = writeBatch(db);
-                snap.forEach(d => { batch.delete(d.ref); });
-                await batch.commit();
-                alert(`Deleted ${snap.size} codes.`);
-                loadPromoCodes();
-            } catch(e) { alert("Error: " + e.message); }
+           alert("Logic removed as Coinly doesn't use expiry date field in this schema.");
         };
 
         // --- GLOBAL ACTIONS ---
@@ -515,20 +474,18 @@
         window.toggleBan = async (uid, c) => { if(confirm(c?"Unban user?":"Ban user?")) { await updateDoc(doc(db,'users',uid), { isBanned: !c }); loadUsers(document.getElementById('userSearch').value); } }
         
         window.editBal = async (uid) => { 
-            const a = prompt("Add Points (e.g., 50) or Deduct (e.g., -50):"); 
+            const a = prompt("Add GG (e.g., 50) or Deduct (e.g., -50):"); 
             if(a && !isNaN(a)) { 
-                await updateDoc(doc(db,'users',uid), { pointBalance: increment(parseFloat(a)) }); 
-                alert("Points Updated");
-                loadUsers(document.getElementById('userSearch').value); 
+                await updateDoc(doc(db,'users',uid), { balanceGG: increment(parseFloat(a)) }); 
+                alert("GG Updated"); loadUsers(document.getElementById('userSearch').value); 
             }
         }
         
-        window.editTon = async (uid) => { 
-            const a = prompt("Add TON (e.g., 0.5) or Deduct (e.g., -0.5):"); 
+        window.editTokens = async (uid) => { 
+            const a = prompt("Add Tokens (e.g., 1) or Deduct (e.g., -1):"); 
             if(a && !isNaN(a)) { 
-                await updateDoc(doc(db,'users',uid), { tonBalance: increment(parseFloat(a)) }); 
-                alert("TON Updated");
-                loadUsers(document.getElementById('userSearch').value); 
+                await updateDoc(doc(db,'users',uid), { gameTokens: increment(parseFloat(a)) }); 
+                alert("Tokens Updated"); loadUsers(document.getElementById('userSearch').value); 
             }
         }
         
@@ -536,40 +493,29 @@
             if(!confirm(`Confirm ${type}?`)) return;
             try {
                 const wRef = doc(db, 'withdrawals', id);
-                if(type === 'approve') await updateDoc(wRef, { status: 'approved' });
-                else await runTransaction(db, async(t) => { t.update(wRef, { status: 'rejected' }); t.update(doc(db,'users',uid), { pointBalance: increment(amt) }); });
+                if(type === 'paid') await updateDoc(wRef, { status: 'paid' }); // Coinly used 'paid'
+                else await runTransaction(db, async(t) => { t.update(wRef, { status: 'rejected' }); t.update(doc(db,'users',uid), { balanceGG: increment(amt) }); });
                 loadWithdrawals(); loadDashboard();
             } catch(e) { alert("Error: " + e); }
         }
 
         document.getElementById('createTaskForm').addEventListener('submit', async(e)=>{
             e.preventDefault();
-            await addDoc(collection(db,'tasks'), {
-                title: document.getElementById('taskTitle').value, url: document.getElementById('taskUrl').value,
-                rewardPoints: parseInt(document.getElementById('taskReward').value), limit: parseInt(document.getElementById('taskLimit').value),
-                completionCount: 0, isApproved: true, createdAt: serverTimestamp()
+            await addDoc(collection(db,'adminTasks'), {
+                title: document.getElementById('taskTitle').value, 
+                link: document.getElementById('taskUrl').value,
+                reward: parseInt(document.getElementById('taskReward').value)
             });
             alert("Created"); e.target.reset();
         });
         async function loadTasks() {
             const list = document.getElementById('tasks-list'); list.innerHTML='<div class="loader"></div>';
-            const snap = await getDocs(query(collection(db,'tasks'), orderBy('createdAt','desc'), limit(50)));
+            const snap = await getDocs(collection(db,'adminTasks'));
             list.innerHTML='';
-            snap.forEach(d=>{ const t=d.data(); list.innerHTML+=`<div class="card-item"><b>${t.title}</b><br>Rew: ${t.rewardPoints} | ${t.completionCount}/${t.limit}<br><button class="btn btn-reject" onclick="delDoc('tasks','${d.id}')">Delete</button></div>`; });
+            snap.forEach(d=>{ const t=d.data(); list.innerHTML+=`<div class="card-item"><b>${t.title}</b><br>Rew: ${t.reward} GG<br><button class="btn btn-reject" onclick="delDoc('adminTasks','${d.id}')">Delete</button></div>`; });
         }
-        window.delDoc = async(col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db,col,id)); if(col==='tasks') loadTasks(); if(col==='watch_videos') loadVideos(); if(col==='promo_codes') loadPromoCodes(); } }
+        window.delDoc = async(col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db,col,id)); if(col==='adminTasks') loadTasks(); if(col==='promoCodes') loadPromoCodes(); } }
 
-        document.getElementById('addVideoForm').addEventListener('submit', async(e)=>{
-            e.preventDefault();
-            await addDoc(collection(db,'watch_videos'), { thumbnailUrl: document.getElementById('vidThumb').value, videoUrl: document.getElementById('vidUrl').value, createdAt: serverTimestamp() });
-            alert("Added"); e.target.reset(); loadVideos();
-        });
-        async function loadVideos() {
-            const list = document.getElementById('videos-list'); list.innerHTML='<div class="loader"></div>';
-            const snap = await getDocs(query(collection(db,'watch_videos'), orderBy('createdAt','desc')));
-            list.innerHTML='';
-            snap.forEach(d=>{ const v=d.data(); list.innerHTML+=`<div class="card-item"><img src="${v.thumbnailUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;"><br><small>${v.videoUrl}</small><br><button class="btn btn-reject" onclick="delDoc('watch_videos','${d.id}')">Delete</button></div>`; });
-        }
     </script>
 </body>
 </html>
