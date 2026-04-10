@@ -7,9 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
             --bg-dark: #121212;
@@ -21,7 +18,7 @@
             --success-color: #00ff88;
             --danger-color: #ff4d4d;
             --warning-color: #FFC107;
-            --token-color: #9b59b6; 
+            --ton-color: #0098EA;
             --promo-gradient: linear-gradient(45deg, #ff00cc, #333399);
         }
 
@@ -111,7 +108,7 @@
         .btn { padding: 8px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; flex: 1; color: white; transition: 0.2s;}
         .btn-approve { background-color: var(--success-color); color: black; }
         .btn-reject { background-color: var(--danger-color); }
-        .btn-ton { background-color: var(--token-color); color:white;}
+        .btn-ton { background-color: var(--ton-color); color:white;}
         .btn-pts { background-color: #FF9800; color:black;}
         .btn-copy { background: #444; padding: 4px 10px; font-size: 0.75em; border: 1px solid #666; border-radius: 4px; color: white; cursor: pointer; }
         .btn-copy:hover { background: #555; }
@@ -133,7 +130,7 @@
     <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
         <div class="login-box">
-            <h2>Coinly Admin</h2>
+            <h2>Admin Access</h2>
             <form id="loginForm">
                 <input type="email" id="adminEmail" placeholder="Admin Email" required>
                 <input type="password" id="adminPass" placeholder="Password" required>
@@ -146,7 +143,7 @@
     <!-- MAIN ADMIN CONTENT -->
     <div id="admin-content" class="admin-container">
         <header class="admin-header">
-            <h1>COINLY TON <span style="font-size:0.5em; color:#fff;">Control Nexus</span></h1>
+            <h1>COINLY TON <span style="font-size:0.5em; color:#fff;">Admin Panel</span></h1>
             <button class="logout-btn" id="logoutBtn">Logout</button>
         </header>
 
@@ -154,7 +151,8 @@
             <button class="nav-btn active" data-target="dashboard">Dashboard</button>
             <button class="nav-btn" data-target="users">Manage Users</button>
             <button class="nav-btn" data-target="withdrawals">Withdrawals <span id="nav-pending-count" style="background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.8em; display:none;">0</span></button>
-            <button class="nav-btn" data-target="tasks">Add Task</button>
+            <button class="nav-btn" data-target="add-user-task" style="border-color:#00ff88; color:#00ff88;">➕ User Task</button>
+            <button class="nav-btn" data-target="add-partner-task" style="border-color:#00eaff; color:#00eaff;">➕ Partner Task</button>
             <button class="nav-btn" data-target="manage-tasks">Manage Tasks</button>
             <button class="nav-btn" data-target="promo-codes" style="border-color:#ff00cc; color:#ff00cc;">Promo Codes</button>
         </nav>
@@ -164,7 +162,7 @@
             <h2>Overview</h2>
             <div class="dashboard-grid">
                 <div class="dash-card"><h3>Total Users</h3><p class="count" id="dash-total-users">...</p></div>
-                <div class="dash-card"><h3>Joined Today</h3><p class="count" id="dash-daily-users">0</p></div>
+                <div class="dash-card"><h3>Daily New Users</h3><p class="count" id="dash-daily-users">0</p><p style="font-size:0.8em; color:#777;">Joined Today</p></div>
                 <div class="dash-card"><h3>Pending Withdrawals</h3><p class="count" id="dash-pending-withdrawals">0</p></div>
                 <div class="dash-card"><h3>Active Tasks</h3><p class="count" id="dash-active-tasks">0</p></div>
             </div>
@@ -180,7 +178,7 @@
         <div id="users" class="admin-section">
             <h2>Users Management
                 <div style="display:inline-block; margin-left:15px;">
-                    <input type="text" id="userSearch" placeholder="UID or Username..." style="padding:8px; width:200px; background:#333; color:white; border:1px solid #555; border-radius:4px;"> 
+                    <input type="text" id="userSearch" placeholder="Enter ID or Username..." style="padding:8px; width:200px; background:#333; color:white; border:1px solid #555; border-radius:4px;"> 
                     <button onclick="searchUser()" class="btn" style="background:var(--primary-accent); color:black; flex:0; width:auto; padding:8px 15px;">Search</button>
                     <button onclick="loadUsers()" class="btn" style="background:#444; color:white; flex:0; width:auto; padding:8px 15px;">Reset</button>
                 </div>
@@ -188,22 +186,74 @@
             <div id="users-list" class="grid-list"></div>
         </div>
 
-        <!-- CREATE TASK -->
-        <div id="tasks" class="admin-section">
-            <h2>Create Task</h2>
-            <div style="max-width:500px; margin:0 auto; background:var(--bg-card); padding:20px; border-radius:12px;">
-                <form id="createTaskForm">
-                    <div class="form-group"><label>Title</label><input type="text" id="taskTitle" required></div>
-                    <div class="form-group"><label>URL</label><input type="url" id="taskUrl" required></div>
-                    <div class="form-group"><label>Reward (GG)</label><input type="number" id="taskReward" required></div>
-                    <button type="submit" class="submit-btn">Create Task</button>
+        <!-- ADD USER TASK (Channel / Group) -->
+        <div id="add-user-task" class="admin-section">
+            <h2 style="color:#00ff88;">➕ Add User Task <span style="font-size:0.6em; color:#aaa;">(Telegram Channel / Group)</span></h2>
+            <div style="max-width:520px; margin:0 auto; background:var(--bg-card); padding:25px; border-radius:12px; border:1px solid #00ff88;">
+                <form id="createUserTaskForm">
+                    <div class="form-group">
+                        <label>Task Title</label>
+                        <input type="text" id="ut-title" placeholder="e.g. Join Our Official Channel" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telegram URL <span style="color:#aaa; font-size:0.85em;">(join link)</span></label>
+                        <input type="url" id="ut-url" placeholder="https://t.me/channelname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Channel / Group Username <span style="color:#aaa; font-size:0.85em;">(for verify)</span></label>
+                        <input type="text" id="ut-channelId" placeholder="@channelname or @groupname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reward Points (GG Pts)</label>
+                        <input type="number" id="ut-reward" placeholder="e.g. 50" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Limit <span style="color:#aaa; font-size:0.85em;">(0 = unlimited)</span></label>
+                        <input type="number" id="ut-limit" placeholder="e.g. 500 or 0" min="0" value="0" required>
+                    </div>
+                    <button type="submit" class="submit-btn" style="background:#00ff88; color:black;">✅ Create User Task</button>
+                    <p id="ut-msg" style="text-align:center; margin-top:10px; font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADD PARTNER TASK (Bot / Other) -->
+        <div id="add-partner-task" class="admin-section">
+            <h2 style="color:#00eaff;">➕ Add Partner Task <span style="font-size:0.6em; color:#aaa;">(Telegram Bot / Other)</span></h2>
+            <div style="max-width:520px; margin:0 auto; background:var(--bg-card); padding:25px; border-radius:12px; border:1px solid #00eaff;">
+                <form id="createPartnerTaskForm">
+                    <div class="form-group">
+                        <label>Task Title</label>
+                        <input type="text" id="pt-title" placeholder="e.g. Start Our Partner Bot" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bot / Task URL</label>
+                        <input type="url" id="pt-url" placeholder="https://t.me/botname or any link" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reward Points (GG Pts)</label>
+                        <input type="number" id="pt-reward" placeholder="e.g. 30" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Limit <span style="color:#aaa; font-size:0.85em;">(0 = unlimited)</span></label>
+                        <input type="number" id="pt-limit" placeholder="e.g. 200 or 0" min="0" value="0" required>
+                    </div>
+                    <button type="submit" class="submit-btn" style="background:#00eaff; color:black;">✅ Create Partner Task</button>
+                    <p id="pt-msg" style="text-align:center; margin-top:10px; font-size:0.9em;"></p>
                 </form>
             </div>
         </div>
 
         <!-- MANAGE TASKS -->
         <div id="manage-tasks" class="admin-section">
-            <h2>Active Tasks</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
+                <h2 style="margin:0;">Manage Tasks</h2>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="loadTasks('all')" id="filter-all" class="btn" style="background:var(--primary-accent); color:black; flex:0; padding:7px 14px;">All</button>
+                    <button onclick="loadTasks('channel')" id="filter-channel" class="btn" style="background:#333; color:#00ff88; border:1px solid #00ff88; flex:0; padding:7px 14px;">User Tasks</button>
+                    <button onclick="loadTasks('partner')" id="filter-partner" class="btn" style="background:#333; color:#00eaff; border:1px solid #00eaff; flex:0; padding:7px 14px;">Partner Tasks</button>
+                </div>
+            </div>
             <div id="tasks-list" class="grid-list"></div>
         </div>
 
@@ -215,12 +265,14 @@
             </div>
             
             <div style="background:#222; padding:20px; border-radius:12px; text-align:center; max-width:400px; margin:0 auto; border:1px solid var(--primary-accent);">
+                
+                <!-- NEW PROMO CODE OPTIONS (GG Pts & Hash Power) -->
                 <div class="promo-input-group">
                     <select id="rewardType" class="promo-select">
-                        <option value="gg">GG Points</option>
+                        <option value="points">GG Points</option>
                         <option value="hash">Hash Power</option>
                     </select>
-                    <input type="number" id="spinPoint" value="50" placeholder="Amount" style="width:100px; padding:5px; background:#333; color:white; border:1px solid #555;">
+                    <input type="number" id="spinPoint" step="any" value="20" placeholder="Amount" style="width:100px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
                 
                 <div class="promo-input-group">
@@ -228,7 +280,7 @@
                     <input type="number" id="spinMax" value="100" placeholder="Users" style="width:80px; padding:5px; background:#333; color:white; border:1px solid #555;">
                 </div>
                 
-                <button id="spinBtn" style="background:var(--promo-gradient); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-top:10px;">Generate Code</button>
+                <button id="spinBtn" style="background:var(--promo-gradient); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-top:10px;">Generate Code (24h)</button>
                 
                 <div id="generatedCode" style="margin:15px 0; display:flex; justify-content:center; align-items:center; gap:10px; min-height:40px;"></div>
             </div>
@@ -237,21 +289,22 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULES (Stable 12.7.0) -->
+    <!-- FIREBASE SDK v12.12.0 MODULES (COINLY TON CONFIG) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, getDoc, query, where, orderBy, doc, updateDoc, increment, deleteDoc, setDoc, addDoc, serverTimestamp, runTransaction, Timestamp, limit, getCountFromServer, writeBatch } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, query, where, orderBy, doc, updateDoc, increment, deleteDoc, setDoc, addDoc, serverTimestamp, runTransaction, Timestamp, limit, getCountFromServer, writeBatch } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-        // COINLY CONFIG
+        // COINLY TON FIREBASE CONFIGURATION
         const firebaseConfig = {
-            apiKey: "AIzaSyAUQBTiqBfPwM5idPo9GKwuggvyRFKSopE",
-            authDomain: "coinly-tix-ton-fd0c3.firebaseapp.com",
-            databaseURL: "https://coinly-tix-ton-fd0c3-default-rtdb.firebaseio.com",
-            projectId: "coinly-tix-ton-fd0c3",
-            storageBucket: "coinly-tix-ton-fd0c3.firebasestorage.app",
-            messagingSenderId: "204024049838",
-            appId: "1:204024049838:web:b64e08efe08526b0c33d3f"
+            apiKey: "AIzaSyD9emTmYE9e64M-2S-ZLxyw-iGvjgNZjSo",
+            authDomain: "coinly-tix-ton.firebaseapp.com",
+            databaseURL: "https://coinly-tix-ton-default-rtdb.firebaseio.com",
+            projectId: "coinly-tix-ton",
+            storageBucket: "coinly-tix-ton.firebasestorage.app",
+            messagingSenderId: "15585403987",
+            appId: "1:15585403987:web:0893a235f80303906612a6",
+            measurementId: "G-PRHPZ9BYM6"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -289,7 +342,7 @@
                 const t = btn.dataset.target;
                 if(t === 'withdrawals') loadWithdrawals();
                 if(t === 'users') loadUsers();
-                if(t === 'manage-tasks') loadTasks();
+                if(t === 'manage-tasks') loadTasks('all');
                 if(t === 'promo-codes') loadPromoCodes();
                 if(t === 'dashboard') loadDashboard();
             });
@@ -301,8 +354,8 @@
                 const uSnap = await getCountFromServer(collection(db, "users"));
                 document.getElementById('dash-total-users').textContent = uSnap.data().count;
                 
-                const today = new Date().toISOString().split('T')[0];
-                const dSnap = await getCountFromServer(query(collection(db, "users"), where("lastAdDate", "==", today)));
+                const today = new Date(); today.setHours(0,0,0,0);
+                const dSnap = await getCountFromServer(query(collection(db, "users"), where("createdAt", ">=", Timestamp.fromDate(today))));
                 document.getElementById('dash-daily-users').textContent = dSnap.data().count;
 
                 const wSnap = await getCountFromServer(query(collection(db, 'withdrawals'), where('status', '==', 'pending')));
@@ -310,12 +363,12 @@
                 document.getElementById('nav-pending-count').textContent = wSnap.data().count;
                 document.getElementById('nav-pending-count').style.display = wSnap.data().count > 0 ? 'inline-block' : 'none';
                 
-                const tSnap = await getCountFromServer(collection(db, 'adminTasks'));
+                const tSnap = await getCountFromServer(collection(db, 'tasks'));
                 document.getElementById('dash-active-tasks').textContent = tSnap.data().count;
-            } catch(e) { console.log("Dash Error", e); }
+            } catch(e) {}
         }
 
-        // --- WITHDRAWALS ---
+        // --- WITHDRAWALS (Updated with Last Withdraw Date) ---
         async function loadWithdrawals() {
             const list = document.getElementById('withdrawals-list');
             list.innerHTML = '<div class="loader"></div>';
@@ -323,32 +376,58 @@
                 const q = query(collection(db, 'withdrawals'), where('status', '==', 'pending'), limit(50));
                 const snap = await getDocs(q);
                 if(snap.empty) { list.innerHTML = '<p style="text-align:center">No Pending Requests.</p>'; return; }
-                
-                const withdrawals = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.date?.seconds||0) - (a.date?.seconds||0));
+                const withdrawals = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
                 list.innerHTML = '';
                 
                 for(const wd of withdrawals) {
                     let totalRef = 0;
+                    let successWdCount = 0;
+                    let telegramUsername = wd.telegramUsername || '';
+                    let lastWdDateStr = "Never"; // Default to never if no history
+
                     try {
                         const uSnap = await getDoc(doc(db, 'users', wd.userId));
-                        if(uSnap.exists()) totalRef = uSnap.data().referrals || 0;
-                    } catch(e) {}
+                        if(uSnap.exists()) {
+                            const u = uSnap.data();
+                            totalRef = u.referralCount || 0;
+                            if (!telegramUsername) telegramUsername = u.telegramUsername || '';
+                        }
+                        
+                        // Fetch user's withdrawal history to find last approved date (avoids need for complex DB index)
+                        const userWds = await getDocs(query(collection(db, 'withdrawals'), where('userId', '==', wd.userId)));
+                        const approvedWds = userWds.docs
+                            .map(d => d.data())
+                            .filter(d => d.status === 'approved' && d.createdAt)
+                            .sort((a,b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+                            
+                        successWdCount = approvedWds.length;
+                        if (approvedWds.length > 0) {
+                            lastWdDateStr = approvedWds[0].createdAt.toDate().toLocaleString();
+                        }
+
+                    } catch(e) { console.error("History fetch error:", e); }
+                    
+                    const walletAddr = wd.walletAddress || wd.details || "N/A";
+                    const displayName = telegramUsername ? '@' + telegramUsername : 'ID: ' + wd.userId;
+                    const reqDate = wd.createdAt ? wd.createdAt.toDate().toLocaleString() : 'N/A';
                     
                     const div = document.createElement('div');
                     div.className = 'card-item';
                     div.innerHTML = `
                         <div class="card-header">
-                            <div><span class="userid">ID: ${wd.userId}</span></div>
+                            <div><span class="username">${displayName}</span><br><span class="userid">ID: ${wd.userId}</span></div>
                             <div style="background:#FFC107; color:black; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:0.8em;">PENDING</div>
                         </div>
                         <div class="card-stats">
-                            <div class="stat-row"><span class="stat-label">Refs:</span> <span class="stat-val" style="color:var(--primary-accent)">${totalRef}</span></div>
+                            <div class="stat-row"><span class="stat-label">Total Ref:</span> <span class="stat-val" style="color:var(--primary-accent)">${totalRef} Users</span></div>
+                            <div class="stat-row"><span class="stat-label">Success Withdrawals:</span> <span class="stat-val" style="color:${successWdCount > 0 ? '#00ff88' : '#aaa'}">${successWdCount} Times</span></div>
+                            <div class="stat-row"><span class="stat-label" style="color:#aaa;">Last Approved:</span> <span class="stat-val" style="color:${lastWdDateStr !== 'Never' ? '#00eaff' : '#aaa'}">${lastWdDateStr}</span></div>
+                            <div class="stat-row"><span class="stat-label" style="color:#aaa;">Requested On:</span> <span class="stat-val" style="font-size:0.85em;">${reqDate}</span></div>
                             <hr style="border-color:#444; width:100%; margin:5px 0;">
-                            <div class="stat-row"><span class="stat-label">Amount:</span> <span class="stat-val" style="font-size:1.1em; color:white;">${wd.amount} GG</span></div>
-                            <div class="stat-row"><span class="stat-label">Method:</span> <span class="stat-val">${wd.method}</span></div>
-                            <div style="margin-top:5px;"><span style="font-size:0.8em; color:#aaa;">Wallet:</span><div class="wallet-box"><span class="wallet-addr">${wd.address}</span><button class="btn-copy" onclick="copyTxt('${wd.address}')">COPY</button></div></div>
+                            <div class="stat-row"><span class="stat-label">Requesting:</span> <span class="stat-val" style="font-size:1.1em; color:white;">${wd.pointAmount} GG Pts</span></div>
+                            <div style="margin-top:5px;"><span style="font-size:0.8em; color:#aaa;">Wallet:</span><div class="wallet-box"><span class="wallet-addr">${walletAddr}</span><button class="btn-copy" onclick="copyTxt('${walletAddr}')">COPY</button></div></div>
                         </div>
-                        <div class="card-actions"><button class="btn btn-approve" onclick="actionWd('${wd.id}', 'paid')">Mark Paid</button><button class="btn btn-reject" onclick="actionWd('${wd.id}', 'reject', '${wd.userId}', ${wd.amount})">Refund</button></div>`;
+                        <div class="card-actions"><button class="btn btn-approve" onclick="actionWd('${wd.id}', 'approve')">Approve</button><button class="btn btn-reject" onclick="actionWd('${wd.id}', 'reject', '${wd.userId}', ${wd.pointAmount})">Refund</button></div>`;
                     list.appendChild(div);
                 }
             } catch(e) { list.innerHTML = `<p style="color:red">Error: ${e.message}</p>`; }
@@ -365,17 +444,19 @@
                 if (cleanSearch) {
                     try {
                         const docSnap = await getDoc(doc(db, 'users', cleanSearch));
-                        if(docSnap.exists()) snap = [docSnap];
+                        if(docSnap.exists()) { snap.push(docSnap); }
                     } catch(e) {}
 
                     if (snap.length === 0) {
                         const usernameClean = cleanSearch.replace('@', '');
-                        const q = query(collection(db, 'users'), where('username', '==', usernameClean));
-                        snap = (await getDocs(q)).docs;
+                        const q = query(collection(db, 'users'), where('telegramUsername', '==', usernameClean));
+                        const querySnap = await getDocs(q);
+                        querySnap.forEach(d => snap.push(d));
                     }
                 } else {
-                    const q = query(collection(db, 'users'), orderBy('balanceGG', 'desc'), limit(50));
-                    snap = (await getDocs(q)).docs;
+                    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(50));
+                    const querySnap = await getDocs(q);
+                    querySnap.forEach(d => snap.push(d));
                 }
 
                 list.innerHTML = '';
@@ -387,15 +468,15 @@
                     const div = document.createElement('div');
                     div.className = `card-item ${isBan?'banned-user':''}`;
                     div.innerHTML = `
-                        <div class="card-header"><div><span class="username">${u.firstName || 'User'}</span><br><span class="userid">${d.id}</span></div>${isBan ? '<span style="background:red; color:white; padding:2px; font-size:0.8em; border-radius:3px;">BANNED</span>' : ''}</div>
+                        <div class="card-header"><div><span class="username">@${u.telegramUsername || 'No-Name'}</span><br><span class="userid">${d.id}</span></div>${isBan ? '<span style="background:red; color:white; padding:2px; font-size:0.8em; border-radius:3px;">BANNED</span>' : ''}</div>
                         <div class="card-stats">
-                            <div class="stat-row"><span class="stat-label">GG:</span> <span class="stat-val">${Math.floor(u.balanceGG||0)}</span></div>
-                            <div class="stat-row"><span class="stat-label">Tokens:</span> <span class="stat-val" style="color:var(--token-color)">${u.gameTokens||0}</span></div>
-                            <div class="stat-row"><span class="stat-label">Refs:</span> <span class="stat-val">${u.referrals||0}</span></div>
+                            <div class="stat-row"><span class="stat-label">GG Pts:</span> <span class="stat-val">${Math.floor(u.pointBalance||0)}</span></div>
+                            <div class="stat-row"><span class="stat-label">TON:</span> <span class="stat-val" style="color:var(--ton-color)">${(u.tonBalance||0).toFixed(4)}</span></div>
+                            <div class="stat-row"><span class="stat-label">Ref:</span> <span class="stat-val">${u.referralCount||0}</span></div>
                         </div>
                         <div class="card-actions" style="margin-top:10px;">
-                            <button class="btn btn-pts" onclick="editBal('${d.id}')"><i class="fas fa-coins"></i> Edit GG</button>
-                            <button class="btn btn-ton" onclick="editTokens('${d.id}')" style="background:var(--token-color)"><i class="fas fa-gamepad"></i> Edit Tokens</button>
+                            <button class="btn btn-pts" onclick="editBal('${d.id}')"><i class="fas fa-coins"></i> Edit Points</button>
+                            <button class="btn btn-ton" onclick="editTon('${d.id}')"><i class="fas fa-gem"></i> Edit TON</button>
                         </div>
                         <div class="card-actions" style="margin-top:5px;">
                             <button class="btn" style="background:${isBan?'#00ff88':'#ff4d4d'}; color:black;" onclick="toggleBan('${d.id}', ${isBan})">${isBan?'UNBAN':'BAN'}</button>
@@ -405,7 +486,7 @@
             } catch(e) { list.innerHTML = `<p>Error: ${e.message}</p>`; }
         }
 
-        // --- PROMO CODES ---
+        // --- PROMO CODES (Updated for Hash Power & GG Points) ---
         document.getElementById('spinBtn').addEventListener('click', async()=>{
             const type = document.getElementById('rewardType').value;
             const amount = parseFloat(document.getElementById('spinPoint').value);
@@ -414,121 +495,90 @@
             if(!amount || amount <= 0) { alert("Invalid Amount"); return; }
             
             const code = Math.floor(100000+Math.random()*900000).toString();
+            const exp = new Date(); 
+            exp.setHours(exp.getHours()+24);
             
-            let data = {
-                active: true,
-                maxUsers: max,
-                currentUsers: 0,
-                createdAt: serverTimestamp()
-            };
-            if(type === 'gg') data.rewardGG = amount;
-            else data.rewardHash = amount;
-            
-            try {
-                await setDoc(doc(db,'promoCodes',code), data);
-                document.getElementById('generatedCode').innerHTML = `<span style="color:#aaa;">Code:</span> <span style="color:var(--success-color); font-size:1.3em; font-weight:bold; letter-spacing:1px;">${code}</span><span style="color:white; font-size:0.8em; margin-left:5px;">(${amount} ${type.toUpperCase()})</span><button onclick="copyTxt('${code}')" class="btn-copy" style="font-size:0.9em; padding:6px 15px; margin-left:10px;">COPY</button>`;
-                loadPromoCodes();
-            } catch(e) { alert("Error generating: " + e.message); }
+            await setDoc(doc(db,'promo_codes',code), {
+                code, rewardType: type, rewardAmount: amount, maxUses: max,
+                currentUses: 0, isActive: true, usersClaimed: [], 
+                expiresAt: Timestamp.fromDate(exp), createdAt: serverTimestamp()
+            });
+
+            let typeLabel = type === 'points' ? 'GG Pts' : 'Hash Power';
+
+            document.getElementById('generatedCode').innerHTML = `<span style="color:#aaa;">Code:</span> <span style="color:var(--success-color); font-size:1.3em; font-weight:bold; letter-spacing:1px;">${code}</span><span style="color:white; font-size:0.8em; margin-left:5px;">(${amount} ${typeLabel})</span><button onclick="copyTxt('${code}')" class="btn-copy" style="font-size:0.9em; padding:6px 15px; margin-left:10px;">COPY</button>`;
+            loadPromoCodes();
         });
 
         async function loadPromoCodes(){
             const list = document.getElementById('promo-list');
             list.innerHTML='<div class="loader"></div>';
-            try {
-                // Simplified query to avoid index errors initially
-                const q = query(collection(db,'promoCodes'), limit(30)); 
-                const snap = await getDocs(q);
-                list.innerHTML='';
-                
-                if(snap.empty) { list.innerHTML = '<p style="text-align:center">No active codes.</p>'; return; }
+            const snap = await getDocs(query(collection(db,'promo_codes'), orderBy('createdAt','desc'), limit(30)));
+            list.innerHTML='';
+            
+            const now = new Date();
+            snap.forEach(d=>{
+                const p = d.data();
+                let isExpired = false;
+                if(p.expiresAt) { const expiryDate = p.expiresAt.toDate(); if(now > expiryDate) isExpired = true; }
 
-                snap.forEach(d=>{
-                    const p = d.data();
-                    const div=document.createElement('div'); 
-                    div.className='card-item';
-                    const rewardTxt = p.rewardGG ? `${p.rewardGG} GG` : `${p.rewardHash} Hash`;
-                    div.innerHTML = `
-                        <div class="card-header"><div style="display:flex; align-items:center; gap:8px;"><h3 style="color:var(--success-color); margin:0;">${d.id}</h3><button class="btn-copy" onclick="copyTxt('${d.id}')" style="padding:2px 6px; font-size:0.7em;">COPY</button></div></div>
-                        <div class="card-stats">
-                            <div class="stat-row"><span>Reward:</span> <b>${rewardTxt}</b></div>
-                            <div class="stat-row"><span>Used:</span> <b>${p.currentUsers}/${p.maxUsers}</b></div>
-                        </div>
-                        <button class="btn btn-reject" style="width:100%; margin-top:10px;" onclick="delDoc('promoCodes','${d.id}')">Delete</button>
-                    `;
-                    list.appendChild(div);
-                });
-            } catch(e) { list.innerHTML = `<p style="color:red">Error: ${e.message}</p>`; }
+                const div=document.createElement('div'); 
+                div.className='card-item';
+                const statusHtml = isExpired ? '<span style="color:#ff4d4d; font-weight:bold;">EXPIRED ⛔</span>' : '<span style="color:#00ff88; font-weight:bold;">ACTIVE ✅</span>';
+                
+                const isHash = p.rewardType === 'hash';
+                const rewardColor = isHash ? '#ff00cc' : 'var(--success-color)';
+                const rewardLabel = isHash ? 'Hash Power' : 'GG Points';
+
+                div.innerHTML = `
+                    <div class="card-header"><div style="display:flex; align-items:center; gap:8px;"><h3 style="color:${isExpired ? '#777' : rewardColor}; margin:0;">${p.code}</h3><button class="btn-copy" onclick="copyTxt('${p.code}')" style="padding:2px 6px; font-size:0.7em;">COPY</button></div>${statusHtml}</div>
+                    <div class="card-stats">
+                        <div class="stat-row"><span>Type:</span> <b style="color:${rewardColor}">${rewardLabel}</b></div>
+                        <div class="stat-row"><span>Reward:</span> <b>${p.rewardAmount}</b></div>
+                        <div class="stat-row"><span>Used:</span> <b>${p.currentUses}/${p.maxUses}</b></div>
+                        <div class="stat-row"><span style="font-size:0.8em; color:#aaa;">Expires: ${p.expiresAt ? p.expiresAt.toDate().toLocaleString() : 'N/A'}</span></div>
+                    </div>
+                    <button class="btn btn-reject" style="width:100%; margin-top:10px;" onclick="delDoc('promo_codes','${d.id}')">Delete</button>
+                `;
+                list.appendChild(div);
+            });
         }
 
         window.clearExpiredPromos = async () => {
-           alert("Not required for this schema.");
+            if(!confirm("Delete ALL expired codes?")) return;
+            const now = new Date();
+            const q = query(collection(db, "promo_codes"), where("expiresAt", "<=", Timestamp.fromDate(now)));
+            try {
+                const snap = await getDocs(q);
+                if(snap.empty) { alert("No expired codes."); return; }
+                const batch = writeBatch(db);
+                snap.forEach(d => { batch.delete(d.ref); });
+                await batch.commit();
+                alert(`Deleted ${snap.size} codes.`);
+                loadPromoCodes();
+            } catch(e) { alert("Error: " + e.message); }
         };
 
-        // --- TASKS ---
-        document.getElementById('createTaskForm').addEventListener('submit', async(e)=>{
-            e.preventDefault();
-            try {
-                await addDoc(collection(db,'adminTasks'), {
-                    title: document.getElementById('taskTitle').value, 
-                    link: document.getElementById('taskUrl').value,
-                    reward: parseInt(document.getElementById('taskReward').value)
-                });
-                alert("Created"); 
-                e.target.reset();
-                loadTasks();
-            } catch(e) { alert("Error creating task: " + e.message); }
-        });
-
-        async function loadTasks() {
-            const list = document.getElementById('tasks-list'); 
-            list.innerHTML='<div class="loader"></div>';
-            try {
-                const snap = await getDocs(collection(db,'adminTasks'));
-                list.innerHTML='';
-                if(snap.empty) { list.innerHTML = '<p style="text-align:center">No tasks found.</p>'; return; }
-
-                snap.forEach(d=>{ 
-                    const t=d.data(); 
-                    list.innerHTML+=`<div class="card-item"><b>${t.title}</b><br>Rew: ${t.reward} GG<br><a href="${t.link}" target="_blank" style="color:var(--primary-accent); font-size:0.8em;">Link</a><br><button class="btn btn-reject" style="margin-top:5px;" onclick="delDoc('adminTasks','${d.id}')">Delete</button></div>`; 
-                });
-            } catch(e) { list.innerHTML = `<p style="color:red">Error loading tasks: ${e.message}</p>`; }
-        }
-
-        // --- GLOBAL SCOPE BINDING ---
-        // Crucial for onclick="" in HTML to work with type="module"
-        window.loadTasks = loadTasks;
-        window.loadPromoCodes = loadPromoCodes;
-        window.loadUsers = loadUsers;
-        window.loadWithdrawals = loadWithdrawals;
-        window.loadDashboard = loadDashboard;
+        // --- GLOBAL ACTIONS ---
         window.copyTxt = (txt) => { navigator.clipboard.writeText(txt).then(()=>alert("Copied!")); }
         window.searchUser = () => loadUsers(document.getElementById('userSearch').value);
-        
-        window.delDoc = async(col, id) => { 
-            if(confirm("Delete this item?")) { 
-                try {
-                    await deleteDoc(doc(db,col,id)); 
-                    if(col==='adminTasks') loadTasks(); 
-                    if(col==='promoCodes') loadPromoCodes(); 
-                } catch(e) { alert("Error deleting: " + e.message); }
-            } 
-        }
-
         window.toggleBan = async (uid, c) => { if(confirm(c?"Unban user?":"Ban user?")) { await updateDoc(doc(db,'users',uid), { isBanned: !c }); loadUsers(document.getElementById('userSearch').value); } }
         
         window.editBal = async (uid) => { 
-            const a = prompt("Add GG (e.g., 50) or Deduct (e.g., -50):"); 
+            const a = prompt("Add GG Pts (e.g., 50) or Deduct (e.g., -50):"); 
             if(a && !isNaN(a)) { 
-                await updateDoc(doc(db,'users',uid), { balanceGG: increment(parseFloat(a)) }); 
-                alert("GG Updated"); loadUsers(document.getElementById('userSearch').value); 
+                await updateDoc(doc(db,'users',uid), { pointBalance: increment(parseFloat(a)) }); 
+                alert("Points Updated");
+                loadUsers(document.getElementById('userSearch').value); 
             }
         }
         
-        window.editTokens = async (uid) => { 
-            const a = prompt("Add Tokens (e.g., 1) or Deduct (e.g., -1):"); 
+        window.editTon = async (uid) => { 
+            const a = prompt("Add TON (e.g., 0.5) or Deduct (e.g., -0.5):"); 
             if(a && !isNaN(a)) { 
-                await updateDoc(doc(db,'users',uid), { gameTokens: increment(parseFloat(a)) }); 
-                alert("Tokens Updated"); loadUsers(document.getElementById('userSearch').value); 
+                await updateDoc(doc(db,'users',uid), { tonBalance: increment(parseFloat(a)) }); 
+                alert("TON Updated");
+                loadUsers(document.getElementById('userSearch').value); 
             }
         }
         
@@ -536,11 +586,134 @@
             if(!confirm(`Confirm ${type}?`)) return;
             try {
                 const wRef = doc(db, 'withdrawals', id);
-                if(type === 'paid') await updateDoc(wRef, { status: 'paid' }); 
-                else await runTransaction(db, async(t) => { t.update(wRef, { status: 'rejected' }); t.update(doc(db,'users',uid), { balanceGG: increment(amt) }); });
+                if(type === 'approve') await updateDoc(wRef, { status: 'approved' });
+                else await runTransaction(db, async(t) => { t.update(wRef, { status: 'rejected' }); t.update(doc(db,'users',uid), { pointBalance: increment(amt) }); });
                 loadWithdrawals(); loadDashboard();
-            } catch(e) { alert("Error: " + e.message); }
+            } catch(e) { alert("Error: " + e); }
         }
+
+        // =============================================
+        // USER TASK (channel/group) — CREATE
+        // =============================================
+        document.getElementById('createUserTaskForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const msg = document.getElementById('ut-msg');
+            const btn = e.target.querySelector('button[type=submit]');
+            btn.disabled = true; btn.textContent = 'Creating...';
+            try {
+                await addDoc(collection(db, 'tasks'), {
+                    title:         document.getElementById('ut-title').value.trim(),
+                    url:           document.getElementById('ut-url').value.trim(),
+                    channelId:     document.getElementById('ut-channelId').value.trim(),
+                    rewardPoints:  parseInt(document.getElementById('ut-reward').value),
+                    limit:         parseInt(document.getElementById('ut-limit').value),
+                    category:      'channel',
+                    completionCount: 0,
+                    isApproved:    true,
+                    createdAt:     serverTimestamp()
+                });
+                msg.style.color = '#00ff88';
+                msg.textContent = '✅ User Task created successfully!';
+                e.target.reset();
+            } catch(err) {
+                msg.style.color = '#ff4d4d';
+                msg.textContent = '❌ Error: ' + err.message;
+            }
+            btn.disabled = false; btn.textContent = '✅ Create User Task';
+        });
+
+        // =============================================
+        // PARTNER TASK (bot/other) — CREATE
+        // =============================================
+        document.getElementById('createPartnerTaskForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const msg = document.getElementById('pt-msg');
+            const btn = e.target.querySelector('button[type=submit]');
+            btn.disabled = true; btn.textContent = 'Creating...';
+            try {
+                await addDoc(collection(db, 'tasks'), {
+                    title:         document.getElementById('pt-title').value.trim(),
+                    url:           document.getElementById('pt-url').value.trim(),
+                    channelId:     '',
+                    rewardPoints:  parseInt(document.getElementById('pt-reward').value),
+                    limit:         parseInt(document.getElementById('pt-limit').value),
+                    category:      'partner',
+                    completionCount: 0,
+                    isApproved:    true,
+                    createdAt:     serverTimestamp()
+                });
+                msg.style.color = '#00eaff';
+                msg.textContent = '✅ Partner Task created successfully!';
+                e.target.reset();
+            } catch(err) {
+                msg.style.color = '#ff4d4d';
+                msg.textContent = '❌ Error: ' + err.message;
+            }
+            btn.disabled = false; btn.textContent = '✅ Create Partner Task';
+        });
+
+        // =============================================
+        // LOAD & MANAGE TASKS
+        // =============================================
+        async function loadTasks(filter = 'all') {
+            const list = document.getElementById('tasks-list');
+            list.innerHTML = '<div class="loader"></div>';
+
+            // highlight active filter button
+            ['all','channel','partner'].forEach(f => {
+                const btn = document.getElementById('filter-' + f);
+                if(btn) btn.style.background = f === filter ? 'var(--primary-accent)' : '#333';
+            });
+
+            try {
+                let q;
+                if(filter === 'channel') {
+                    q = query(collection(db,'tasks'), where('category','==','channel'), orderBy('createdAt','desc'), limit(50));
+                } else if(filter === 'partner') {
+                    q = query(collection(db,'tasks'), where('category','==','partner'), orderBy('createdAt','desc'), limit(50));
+                } else {
+                    q = query(collection(db,'tasks'), orderBy('createdAt','desc'), limit(50));
+                }
+
+                const snap = await getDocs(q);
+                list.innerHTML = '';
+                if(snap.empty) { list.innerHTML = '<p style="text-align:center; color:#777;">No tasks found.</p>'; return; }
+
+                snap.forEach(d => {
+                    const t = d.data();
+                    const isChannel = t.category === 'channel';
+                    const badgeColor  = isChannel ? '#00ff88' : '#00eaff';
+                    const badgeLabel  = isChannel ? '👤 User Task' : '🤖 Partner Task';
+                    const limitLabel  = (t.limit || 0) === 0 ? '∞ Unlimited' : `${t.completionCount || 0} / ${t.limit}`;
+                    const channelLine = isChannel && t.channelId
+                        ? `<div class="stat-row"><span>Channel ID:</span> <span class="stat-val" style="color:var(--primary-accent);">${t.channelId}</span></div>`
+                        : '';
+
+                    const div = document.createElement('div');
+                    div.className = 'card-item';
+                    div.innerHTML = `
+                        <div class="card-header">
+                            <div>
+                                <span style="background:${badgeColor}22; color:${badgeColor}; border:1px solid ${badgeColor}; padding:2px 10px; border-radius:20px; font-size:0.75em; font-weight:600;">${badgeLabel}</span>
+                                <p style="margin:8px 0 2px; font-size:1rem; font-weight:600; color:white;">${t.title}</p>
+                            </div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-row"><span>Reward:</span> <span class="stat-val" style="color:#FFC107;">🎁 ${t.rewardPoints} GG Pts</span></div>
+                            <div class="stat-row"><span>Completions:</span> <span class="stat-val">${limitLabel}</span></div>
+                            ${channelLine}
+                            <div class="stat-row"><span>URL:</span> <span class="stat-val" style="color:var(--primary-accent); font-size:0.8em;">${t.url || 'N/A'}</span></div>
+                        </div>
+                        <button class="btn btn-reject" style="margin-top:10px;" onclick="delDoc('tasks','${d.id}')">🗑 Delete Task</button>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch(err) {
+                list.innerHTML = `<p style="color:red; text-align:center;">Error: ${err.message}</p>`;
+            }
+        }
+        
+        window.delDoc = async(col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db,col,id)); if(col==='tasks') loadTasks('all'); if(col==='promo_codes') loadPromoCodes(); } }
 
     </script>
 </body>
